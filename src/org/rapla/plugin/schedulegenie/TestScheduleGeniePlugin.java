@@ -3,7 +3,9 @@ package org.rapla.plugin.schedulegenie;
 import org.rapla.client.ClientServiceContainer;
 import org.rapla.client.RaplaClientExtensionPoints;
 import org.rapla.components.xmlbundle.I18nBundle;
+import org.rapla.components.xmlbundle.impl.I18nBundleImpl;
 import org.rapla.framework.Configuration;
+import org.rapla.framework.PluginDescriptor;
 import org.rapla.framework.RaplaContextException;
 import org.rapla.framework.StartupEnvironment;
 import org.rapla.framework.TypedComponentRole;
@@ -13,9 +15,9 @@ import org.rapla.plugin.export2ical.Export2iCalPlugin;
 import org.rapla.plugin.export2ical.Export2iCalUserOption;
 import org.rapla.plugin.export2ical.IcalPublicExtensionFactory;
 
-public class TestScheduleGeniePlugin {
+public class TestScheduleGeniePlugin implements PluginDescriptor<ClientServiceContainer>{
 	
-	public static final TypedComponentRole<I18nBundle> RESOURCE_FILE = new TypedComponentRole<I18nBundle>(Export2iCalPlugin.class.getPackage().getName() + ".Export2iCalResources");
+	/*public static final TypedComponentRole<I18nBundle> RESOURCE_FILE = new TypedComponentRole<I18nBundle>(Export2iCalPlugin.class.getPackage().getName() + ".Export2iCalResources");
 	
 	public static final boolean ENABLE_BY_DEFAULT = false;
     public static final String EXPORT_ATTENDEES_PARTICIPATION_STATUS = "export_attendees_participation_status";
@@ -36,6 +38,21 @@ public class TestScheduleGeniePlugin {
         	container.addContainerProvidedComponent(RaplaClientExtensionPoints.EXPORT_MENU_EXTENSION_POINT, Export2iCalMenu.class);
         }
 	    container.addContainerProvidedComponent(RaplaClientExtensionPoints.USER_OPTION_PANEL_EXTENSION, Export2iCalUserOption.class);
+	}*/
+	
+	public static final boolean ENABLE_BY_DEFAULT = false;
+	public static final TypedComponentRole<I18nBundle> RESOURCE_FILE = new TypedComponentRole<I18nBundle>(TestScheduleGeniePlugin.class.getPackage().getName() + ".TestScheduleGeniePluginResources");
+
+	@SuppressWarnings("deprecation")
+	public void provideServices(ClientServiceContainer container, Configuration config) {
+	  if ( !config.getAttributeAsBoolean("enabled", ENABLE_BY_DEFAULT) )
+	     return;
+
+	  container.addContainerProvidedComponent( RESOURCE_FILE, I18nBundleImpl.class,I18nBundleImpl.createConfig( RESOURCE_FILE.getId() ) );
+
+		
+		System.out.println("********** THE PLUGIN IS ENABLED ************");
+		
 	}
 
 }
