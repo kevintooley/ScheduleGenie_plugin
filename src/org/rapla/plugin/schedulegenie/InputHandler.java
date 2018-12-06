@@ -15,16 +15,25 @@ import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
 
+/**
+ * The InputHandler class receives the export from the parent Rapla application.  Using SuperCSV, ScheduleGenie
+ * first parses the CSV input.  It sets up column headers based on the input, and places each shot into a 
+ * TestShot object.  These objects are stored in a LinkedList.  The shots within the list are then separated 
+ * by lab, and those shots are then separated by the day of the week.  The result is the basis for output from 
+ * the ScheduleHandler class.
+ * @author Kevin Tooley
+ * @version 1.0.0
+ */
 public class InputHandler {
 	
 	// For testing purposes only; file will be read from Rapla export function
-	static final String CSV_FILENAME = "C:/Users/ktooley/Documents/ScheduleGenie_TEST/180822_Rev1.csv";
+	static final String CSV_FILENAME = "C:/Users/ktooley/Documents/ScheduleGenie_TEST/180822_Rev1.csv"; // TODO: Set filename to operator choice
 	
 	// Create Semicolon preference
 	private static final CsvPreference SEMI_DELIMITED = new CsvPreference.Builder('"', ';', "\n").build();
 	
 	// LinkedList to hold test shots
-	private LinkedList<TestShot> shotList = new LinkedList<TestShot>();
+	private LinkedList<TestShot> shotList = new LinkedList<TestShot>();  // Holds items parsed from CSV
 	
 	/**
 	 * Using Super CSV, parse the input file (i.e. CSV export from Rapla).  TestShot members must match the inputs from the CSV.
@@ -84,6 +93,10 @@ public class InputHandler {
      */
 	public LinkedList<TestShot> getShotList() {
 		return shotList;
+	}
+	
+	public void formatInput() {
+		
 	}
 
 }

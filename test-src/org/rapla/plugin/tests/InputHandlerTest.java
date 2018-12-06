@@ -14,7 +14,7 @@ public class InputHandlerTest {
 		ih.parseCsv();
 		
 		System.out.println("Shot List size = " + ih.getShotList().size());
-		assertTrue(ih.getShotList().size() > 5);
+		assertTrue(ih.getShotList().size() > 158);
 		assertTrue(ih.getShotList().getFirst().getName().equals("MA - Overnight Automation"));
 		assertTrue(ih.getShotList().getLast().getName().equals("OE Refresh"));
 	}
