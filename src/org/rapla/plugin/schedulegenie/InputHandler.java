@@ -27,7 +27,7 @@ import org.supercsv.prefs.CsvPreference;
 public class InputHandler {
 	
 	// For testing purposes only; file will be read from Rapla export function
-	static final String CSV_FILENAME = "C:/Users/ktooley/Documents/ScheduleGenie_TEST/180822_Rev1.csv"; // TODO: Set filename to operator choice
+	//static final String CSV_FILENAME = "C:/Users/ktooley/Documents/ScheduleGenie_TEST/180822_Rev1.csv"; // TODO: Set filename to operator choice
 	
 	// Create Semicolon preference
 	private static final CsvPreference SEMI_DELIMITED = new CsvPreference.Builder('"', ';', "\n").build();
@@ -40,7 +40,9 @@ public class InputHandler {
 	 * Additional fields will need to be handled with a code change.
 	 * Additional resources are not an issue and will be part of the Resources string.
 	 */
-	public void parseCsv() {
+	public void parseCsv(String filename) {
+		
+		final String CSV_FILENAME = filename; 
 		
 		//try(ICsvBeanReader beanReader = new CsvBeanReader(new FileReader(CSV_FILENAME), CsvPreference.STANDARD_PREFERENCE))
 		try(ICsvBeanReader beanReader = new CsvBeanReader(new FileReader(CSV_FILENAME), SEMI_DELIMITED))

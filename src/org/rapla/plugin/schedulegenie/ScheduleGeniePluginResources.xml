@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!--*- coding: utf-8 -*-->
 <!DOCTYPE resources SYSTEM "../../components/xmlbundle/resources.dtd">
 <resources default="en">
-	<entry key="export_file_text">
-		<text lang="en">Export view to iCal file</text>
+	<entry key="schedule.export">
+		<text lang="en">Export to ScheduleGenie</text>
 		<text lang="de">Exportiere Sicht in iCal File</text>
 		<text lang="fr">Exporte la vue en iCal File</text>
 	</entry>
