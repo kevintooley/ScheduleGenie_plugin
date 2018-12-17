@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
@@ -25,6 +26,7 @@ import java.util.List;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import jxl.*;
@@ -36,22 +38,28 @@ public class SpreadsheetHandler {
 	
 	// Declare the workbook used for the lab schedules
 	public XSSFWorkbook workbook;
+	public XSSFWorkbook bulkUpload;
 	
-	public void createScheduleWorkbook() {
-		
-		String[] columns = {"Name", "Email", "Date Of Birth", "Salary"};
-	    //private static List<Employee> employees =  new ArrayList<>();
-		
-		// Create a Workbook
-        workbook = new XSSFWorkbook(); // new HSSFWorkbook() for generating `.xls` file
+	//Constructor
+	public SpreadsheetHandler() throws FileNotFoundException, IOException {
+		// Create a Workbook for Lab schedules
+        workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
+        
+        //final String userHome = System.getProperty("user.home");
+        //String filePath = userHome + "\\Documents\\nscc_bulk_template.xls";
+        
+        // Create workbook for bulk upload
+        //bulkUpload = new XSSFWorkbook(new FileInputStream(filePath));
+	}
+	
+	public void createScheduleSheet(String sheetName, String weekStartDate, String weekEndDate) {
 
         /* CreationHelper helps us create instances of various things like DataFormat, 
            Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way */
         XSSFCreationHelper createHelper = workbook.getCreationHelper();
 
         // Create a Sheet
-        // TODO: Worksheet names should be the name of the lab.  The lab should be an object in a collection
-        XSSFSheet sheet = workbook.createSheet("AMOD1");
+        XSSFSheet sheet = workbook.createSheet(sheetName);
         
         /*
          * 
@@ -94,7 +102,7 @@ public class SpreadsheetHandler {
             XSSFCell cell = headerRowA.createCell(i);
             cell.setCellStyle(headerRowACellStyle);
             if (i == 0)
-            	cell.setCellValue(sheet.getSheetName() + " Schedule for MM/dd to MM/dd");
+            	cell.setCellValue(sheetName + " Schedule for " + weekStartDate + " to " + weekEndDate);
         }
         
         /*
@@ -192,38 +200,7 @@ public class SpreadsheetHandler {
             	cell.setCellValue("Support");
             	break;
             }
-        }
-        
-        
-        /*
-        // Create Cell Style for formatting Date
-        XSSFCellStyle dateCellStyle = workbook.createCellStyle();
-        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
-
-        // Create Other rows and cells with employees data
-        int rowNum = 1;
-        //for(Employee employee: employees) {
-            XSSFRow row = sheet.createRow(rowNum++);
-
-            row.createCell(0)
-                    .setCellValue("Kevin Tooley");
-
-            row.createCell(1)
-                    .setCellValue("Kevin's Email");
-
-            XSSFCell dateOfBirthCell = row.createCell(2);
-            dateOfBirthCell.setCellValue("10/31/2018");
-            dateOfBirthCell.setCellStyle(dateCellStyle);
-
-            row.createCell(3)
-                    .setCellValue("Some other fact");
-        //}
-
-		// Resize all columns to fit the content size
-        for(int i = 0; i < columns.length; i++) {
-            sheet.autoSizeColumn(i);
-        }*/
-		
+        }	
 	}
 	
 	public void createDateRow(String sheetName, int rowNumber, String day, String date) {
@@ -246,8 +223,8 @@ public class SpreadsheetHandler {
         dateRowCellStyle.setBorderLeft(BorderStyle.THIN);
         
         // Create Row B, merge
-        XSSFSheet sheet = workbook.getSheet(sheetName);  	// TODO: Provide sheet name as argument
-        XSSFRow dateRow = sheet.createRow(rowNumber); 			// TODO: Provide row number as argument
+        XSSFSheet sheet = workbook.getSheet(sheetName);
+        XSSFRow dateRow = sheet.createRow(rowNumber);
         
         // Create cells for Row B
         for(int i = 0; i < 12; i++) {
@@ -265,7 +242,8 @@ public class SpreadsheetHandler {
 		
 	}
 	
-	public void addShotToSchedule(String sheetName, int rowNumber, int startTime, int endTime, String shotName) {
+	//TODO add resources to shot
+	public void addShotToSchedule(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
 		
 		// Create a Font for styling new row
         XSSFFont newRowFont = workbook.createFont();
@@ -302,8 +280,11 @@ public class SpreadsheetHandler {
         newRowTimeCellStyle.setDataFormat(format.getFormat("0000"));
         
         // Add row to sheet
-        XSSFSheet sheet = workbook.getSheet(sheetName);  	// TODO: Provide sheet name as argument
-        XSSFRow newRow = sheet.createRow(rowNumber); 			// TODO: Provide row number as argument
+        XSSFSheet sheet = workbook.getSheet(sheetName);
+        XSSFRow newRow = sheet.createRow(rowNumber);
+        
+        // Split the resources for each shot into an array
+        String[] resourceArray = resources.split(",");
         
         // Create the cells for the new row
         for(int i = 0; i < 12; i++) {
@@ -312,15 +293,138 @@ public class SpreadsheetHandler {
             
             switch(i) {
             case 0:
+            	
             	cell.setCellStyle(newRowTimeCellStyle);
-            	cell.setCellValue(startTime);
+            	cell.setCellValue(Integer.parseInt(startTime));
             	break;
+            	
             case 1:
+            	
             	cell.setCellStyle(newRowTimeCellStyle);
-            	cell.setCellValue(endTime);
+            	cell.setCellValue(Integer.parseInt(endTime));
             	break;
+            	
             case 2:
-            	cell.setCellValue(shotName);
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	
+            	String buildId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("BUILD:")) {
+            			buildId = res.replace(" BUILD: ", "");
+            			break;
+            		}
+            	}
+            	
+            	cell.setCellValue(shotName + " (" + buildId + ")");
+            	break;
+            	
+            case 3:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	
+            	String configId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("CONFIG:")) {
+            			configId = res.replace(" CONFIG: ", "");
+            			break;
+            		}
+            	}
+            	
+            	cell.setCellValue(configId);
+            	break;
+            	
+            case 4:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("CDLMS1"))
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 5:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("CDLMS2"))           		
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 6:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("UMG1"))            		
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 7:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("UMG2"))
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 8:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("CEC"))
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 9:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("JMCIS"))
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            case 10:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	
+            	// Split the RI input to evaluate for multiple RI's
+            	String[] splitStr = ri.split(",");
+            	
+            	String formatedRiString = "";
+            	if (splitStr.length > 2) { 
+
+            		// More than 1 RI identified
+            		// Format the RI string with separating characters
+            		for (int j = 0; j < splitStr.length; j++) {
+            			if (j == 0) 
+            				formatedRiString = formatedRiString + splitStr[j];
+            			else if (j % 2 == 0) 
+            				formatedRiString = formatedRiString + " | " + splitStr[j];
+            			else
+            				formatedRiString = formatedRiString + ", " + splitStr[j];
+            		}
+            		
+            		cell.setCellValue(formatedRiString);
+            		
+            		sheet.autoSizeColumn(i);
+            		
+            	}
+            	else {
+            		cell.setCellValue(ri);
+            	}
+            	
+
+            	
+            	
+            	break;
+            	
+            case 11:
+            	
+            	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("CDLMS") || resources.contains("UMG"))
+            		cell.setCellValue("MLST3");
+            	
+            	break;
+            	
             default:
             	cell.setCellStyle(newRowCellStyle);
             }
@@ -334,19 +438,19 @@ public class SpreadsheetHandler {
 		try {
 			fileOut = new FileOutputStream(filePath);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
 			workbook.write(fileOut);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
 			fileOut.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -354,11 +458,49 @@ public class SpreadsheetHandler {
         try {
 			workbook.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	
+	public void populateBulkUpload(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
+		
+		// Add row to sheet
+		XSSFSheet bulkUploadSheet = workbook.getSheet("Shot_Template");
+        //XSSFRow newRow = sheet.createRow(rowNumber);
+        XSSFRow newRow = bulkUploadSheet.getRow(rowNumber);
+        
+        // Split the resources for each shot into an array
+        String[] resourceArray = resources.split(",");
+        
+        // Create the cells for the new row
+        for(int i = 0; i < 12; i++) {
+        	
+        	XSSFCell cell = newRow.getCell(i);
+            
+            switch(i) {
+            
+            case 0:
+            	
+            	// Split the RI input to evaluate for multiple RI's
+            	String[] splitStr = ri.split(",");
+            	
+            	if (ri.contains("Jr."))
+            		cell.setCellValue(splitStr[0] + ", " + splitStr[1] + ", " + splitStr[2]);
+            	else
+            		cell.setCellValue(splitStr[0] + ", " + splitStr[1]);
+            	
+            	break;
+            	
+            case 1:
+            	
+            	cell.setCellValue(shotName);
+            		
+            
+            }
+        	
+        }
+		
+	}
 
 }

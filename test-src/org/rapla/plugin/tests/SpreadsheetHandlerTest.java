@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 import org.junit.Test;
 import org.rapla.plugin.schedulegenie.SpreadsheetHandler;
@@ -12,7 +13,7 @@ import org.rapla.plugin.schedulegenie.SpreadsheetHandler;
 public class SpreadsheetHandlerTest {
 
 	@Test
-	public void testCreateXlsxSpreadsheet() {
+	public void testCreateXlsxSpreadsheet() throws FileNotFoundException, IOException {
 		
 		File f = new File("C:/Users/ktooley/Documents/TEST/poi-generated-file.xlsx");
 		if (f.exists()) {
@@ -21,9 +22,9 @@ public class SpreadsheetHandlerTest {
 		
 		SpreadsheetHandler sh = new SpreadsheetHandler();
 		
-		sh.createScheduleWorkbook();
+		sh.createScheduleSheet("AMOD1", "12/10", "12/16");
 		sh.createDateRow("AMOD1", 3, "Monday", "12/3/2018");
-		sh.addShotToSchedule("AMOD1", 4, 600, 900, "Load & Cycle");
+		sh.addShotToSchedule("AMOD1", 4, "Load & Cycle", "0600", "0900", "CDLMS1", "Kevin");
 		
 		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/poi-generated-file.xlsx");
 		

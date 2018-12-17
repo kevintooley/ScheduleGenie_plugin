@@ -58,14 +58,13 @@ public class InputHandler {
             // Add test shots to the LinkedList
             TestShot testshot;
             while ((testshot = beanReader.read(TestShot.class, headers, processors)) != null) {
-                System.out.println(testshot);
                 shotList.add(testshot);
             }
         } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
