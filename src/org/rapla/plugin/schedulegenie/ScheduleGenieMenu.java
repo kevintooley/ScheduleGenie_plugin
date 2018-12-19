@@ -168,7 +168,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		/*
 		 * Create a Schedule Sheet for each lab
 		 */
-		SpreadsheetHandler sh = new SpreadsheetHandler();
+		SpreadsheetHandler sh = new SpreadsheetHandler(false);
 		
 		// Row counter for bulk upload spreadsheet starts at row 1; 
 		// Isolated from loop below as we don't want to reset this counter
@@ -257,13 +257,13 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		DateFormat sdfyyMMdd = new SimpleDateFormat("yyMMdd");
 		
 		// Use a simple string for the filename instead of the long sequence commented below
-		final String scheduleName = "NSCC_Test_Schedules";
-		final String bulkUploadName = "NSCC_Bulk_Upload";
+		final String scheduleName = "_NSCC_Test_Schedules";
+		final String bulkUploadName = "_NSCC_Bulk_Upload";
 		
 		// Get user home property; TODO: Find method to get MyDocuments directory
 		final String userHome = System.getProperty("user.home");
 		
-		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( getDate(model.getStartDate(), true) ) + scheduleName + ".xlsx";
 		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 		
 		

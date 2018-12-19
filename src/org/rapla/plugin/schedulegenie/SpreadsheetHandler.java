@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,8 +46,18 @@ public class SpreadsheetHandler {
 	public XSSFWorkbook workbook;
 	public HSSFWorkbook bulkUpload;
 	
+	private boolean isUnitTest;
+	
+	public boolean isUnitTest() {
+		return isUnitTest;
+	}
+
 	//Constructor
-	public SpreadsheetHandler() throws FileNotFoundException, IOException {
+	public SpreadsheetHandler(boolean isTest) throws FileNotFoundException, IOException {
+		
+		// Set unit test flag
+		isUnitTest = isTest;
+		
 		// Create a Workbook for Lab schedules
         workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
         
@@ -439,27 +451,30 @@ public class SpreadsheetHandler {
 	}
 	
 	// TODO: Add dialog box if files exist
-	public void closeWorkbook(String filePath1, String filePath2) {
+	public void closeWorkbook(String scheduleFilePath, String bulkFilePath) {
 		// Write the output to a file
-        FileOutputStream fileOut1 = null;
-        FileOutputStream fileOut2 = null;
+        FileOutputStream scheduleOutStream = null;
+        FileOutputStream bulkOutStream = null;
 		try {
-			fileOut1 = new FileOutputStream(filePath1);
-			fileOut2 = new FileOutputStream(filePath2);
+			if (isUnitTest)
+				scheduleOutStream = new FileOutputStream(scheduleFilePath);
+			else
+				scheduleOutStream = new FileOutputStream(chooseFile(scheduleFilePath));
+			bulkOutStream = new FileOutputStream(bulkFilePath);
 		} catch (FileNotFoundException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
-			workbook.write(fileOut1);
-			bulkUpload.write(fileOut2);
+			workbook.write(scheduleOutStream);
+			bulkUpload.write(bulkOutStream);
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
-			fileOut1.close();
-			fileOut2.close();
+			scheduleOutStream.close();
+			bulkOutStream.close();
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
@@ -473,6 +488,38 @@ public class SpreadsheetHandler {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public String chooseFile(String suggestedFileName) {
+		
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "EXCEL Spreadsheets", "xlsx", "xls");
+		fileChooser.setFileFilter(filter);
+		fileChooser.setCurrentDirectory(new File
+				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Zeta"));
+		fileChooser.setSelectedFile(new File (suggestedFileName));
+		//if (fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
+		//if (fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		  File file = fileChooser.getSelectedFile();
+		  //System.out.println(file.getName());
+		  //System.out.println(file.getAbsolutePath());
+		  return file.getAbsolutePath();
+		}
+		return "failed";
+		
+		/*JFileChooser chooser = new JFileChooser();
+	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+	        "JPG & GIF Images", "jpg", "gif");
+	    chooser.setFileFilter(filter);
+	    int returnVal = chooser.showOpenDialog(parent);
+	    if(returnVal == JFileChooser.APPROVE_OPTION) {
+	       System.out.println("You chose to open this file: " +
+	            chooser.getSelectedFile().getName());
+	    }*/
+
+		
 	}
 	
 	public void populateBulkUpload(String sheetName, String labName, int rowNumber, String shotName, String date, String startTime, String endTime, String resources, String ri) {
@@ -617,10 +664,7 @@ public class SpreadsheetHandler {
             		element = "CND";
                 	cellValue = getLabName(labName) + " " + element;
             	}
-            	
-            	
-            	
-            	
+
             	break;
             	
             case 10:

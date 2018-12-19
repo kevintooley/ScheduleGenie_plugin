@@ -26,7 +26,7 @@ public class SpreadsheetHandlerTest {
 			if (f.delete()) { System.out.println("File deleted"); }
 		}
 		
-		SpreadsheetHandler sh = new SpreadsheetHandler();
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
 		
 		sh.createScheduleSheet("AMOD1", "12/10", "12/16");
 		sh.createDateRow("AMOD1", 3, "Monday", "12/3/2018");
@@ -83,7 +83,7 @@ public class SpreadsheetHandlerTest {
 			if (f1.delete()) { System.out.println("File deleted"); }
 		}
 		
-		SpreadsheetHandler sh = new SpreadsheetHandler();
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
 		
 		sh.populateBulkUpload("Shot_Template", 
 				  "BL10_SUITE", 
@@ -237,6 +237,16 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(17).getStringCellValue().equals(""));
 		
 		
+		
+	}
+	
+	@Test
+	public void testChooseWorkbook() throws FileNotFoundException, IOException {
+		
+		SpreadsheetHandler sh = new SpreadsheetHandler(false);
+		
+		// operator must choose the file below to pass
+		assertTrue(sh.chooseFile("TEST_FILE.xlsx").equals("C:\\Users\\ktooley\\Documents\\nscc_bulk_template.xls"));
 		
 	}
 
