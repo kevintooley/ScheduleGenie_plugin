@@ -247,7 +247,6 @@ public class SpreadsheetHandler {
 		
 	}
 	
-	//TODO add resources to shot
 	public void addShotToSchedule(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
 		
 		// Create a Font for styling new row
@@ -439,6 +438,7 @@ public class SpreadsheetHandler {
 		
 	}
 	
+	// TODO: Add dialog box if files exist
 	public void closeWorkbook(String filePath1, String filePath2) {
 		// Write the output to a file
         FileOutputStream fileOut1 = null;
@@ -605,11 +605,11 @@ public class SpreadsheetHandler {
             // TODO: Produce a configuration file that will specify the settings below.  	
             case 9:
             	// If LBTS or SUITE B shot, skip past case 10-14
-            	if (labName == "LBTS") {
+            	if (labName.equals("LBTS")) {
             		i = 14;
             		cellValue = "LBTS";
             	}
-            	else if (labName == "SUITE_B") {
+            	else if (labName.equals("SUITE_B")) {
             		i = 14;
             		cellValue = "SUITE B";
             	}

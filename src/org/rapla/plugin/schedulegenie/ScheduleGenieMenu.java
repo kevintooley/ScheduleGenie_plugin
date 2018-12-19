@@ -104,9 +104,6 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Create user; needed for LoadColumns API
 		User myUser = model.getUser();
 		
-		// Get user home property; TODO: Find method to get MyDocuments directory
-		final String userHome = System.getProperty("user.home");
-		
 		/*
 		 * The model.getStartDate().toLocaleString() method is not returning the correct time stamp.  It 
 		 * seems to be returning GMT.  As a result, I needed to use the below calculations/methods in order
@@ -173,7 +170,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		 */
 		SpreadsheetHandler sh = new SpreadsheetHandler();
 		
-		// row counter starts at row 1 in the bulk upload; isolated from loop below as we don't want to reset this counter
+		// Row counter for bulk upload spreadsheet starts at row 1; 
+		// Isolated from loop below as we don't want to reset this counter
 		int j = 1;  
 		
 		for (Lab room : labObjects) {
@@ -183,8 +181,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			if (room.shots.size() > 0)
 				System.out.println("Creating schedule for " + room.name);
 			
-			// Row counters; i is for the Schedule worksheet.  j is for the bulk upload worksheet
-			int i = 3;  // row counter starts at row 3 in Schedule
+			int i = 3;  // row counter starts at row 3 in Schedule; this counter resets for each sheet
 			
 			
 			// Setup a string to track the day of week
@@ -257,8 +254,22 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			
 		}
 		
-		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/TEST.xlsx", "C:/Users/ktooley/Documents/TEST/BulkUpload.xls");  // TODO: set path to user home
+		DateFormat sdfyyMMdd = new SimpleDateFormat("yyMMdd");
 		
+		// Use a simple string for the filename instead of the long sequence commented below
+		final String scheduleName = "NSCC_Test_Schedules";
+		final String bulkUploadName = "NSCC_Bulk_Upload";
+		
+		// Get user home property; TODO: Find method to get MyDocuments directory
+		final String userHome = System.getProperty("user.home");
+		
+		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+		
+		
+		sh.closeWorkbook(scheduleFilename, bulkFilename);  // TODO: Create method to prompt user with dialog box
+		
+		exportFinished(getMainComponent());
 		
 		/*
 		 * 
@@ -266,6 +277,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		 * 
 		 */
 		
+		/* OLD EXPORT FUNCTION
 	    // generates a text file from all filtered events;
 	    StringBuffer buf = new StringBuffer();
 	    
@@ -331,14 +343,14 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		final String calendarName = "ScheduleGenieCSV";
 		//final String calendarName = getQuery().getSystemPreferences().getEntryAsString(RaplaMainContainer.TITLE, getString("rapla.title"));
 		
-		// Get user home property; TODO: Find method to get MyDocuments directory
+		// Get user home property
 		//final String userHome = System.getProperty("user.home");
 		
 		String filename = calendarName + "-" + sdfyyyyMMdd.format( model.getStartDate() )  + "-" + sdfyyyyMMdd.format( model.getEndDate() ) + ".csv";
 		
-		/* Keeping the below filename as individual piece as this works better for the resultant SaveAs dialog box
-		   By concatenating userHome\Documents\filename together, it throws off the dialog box and makes it more
-		   difficult for the user */
+		// Keeping the below filename as individual piece as this works better for the resultant SaveAs dialog box
+		// By concatenating userHome\Documents\filename together, it throws off the dialog box and makes it more
+		// difficult for the user
 		if (saveFile( bytes, userHome + "\\Documents\\" + filename,"csv"))
 		{
 			exportFinished(getMainComponent());
@@ -347,9 +359,11 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Call the InputHandler to start parsing the input CSV file
 		InputHandler handler = new InputHandler();
 		handler.parseCsv(userHome + "\\Documents\\" + filename);  // See note above describing reason for this filename
+		*/
 		
 	}
-	
+
+		
 	/**
 	 * Dialog for export completion
 	 * @param topLevel
