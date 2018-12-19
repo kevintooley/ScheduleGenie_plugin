@@ -96,11 +96,6 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
 	public void export(final CalendarSelectionModel model) throws Exception
 	{
-		/*
-		 * 
-		 * SANDBOX
-		 * 
-		 */
 				
 		/*
 		 * Preconditions and Setup
@@ -108,6 +103,9 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		
 		// Create user; needed for LoadColumns API
 		User myUser = model.getUser();
+		
+		// Get user home property; TODO: Find method to get MyDocuments directory
+		final String userHome = System.getProperty("user.home");
 		
 		/*
 		 * The model.getStartDate().toLocaleString() method is not returning the correct time stamp.  It 
@@ -133,26 +131,6 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		List<Object> myObjects = new ArrayList<Object>();
 		final List<AppointmentBlock> myBlocks = model.getBlocks();
 		myObjects.addAll(myBlocks);
-		
-		/*
-		 * Print data for each shot in master myObjects array list
-		 */
-		/*for (Object app : myObjects) {
-			System.out.println("");
-			System.out.println("<<<BEGIN SHOT DATA>>>");
-			int i = 0;
-			for (RaplaTableColumn column : myColumns) {
-				
-				Object value = column.getValue(app);
-				System.out.println("Column " + i + " value: " + value);
-				i++;
-				
-			}
-			System.out.println("<<<END SHOT DATA>>>");
-			
-		}
-		
-		System.out.println("");*/
 		
 		/*
 		 * Create the lab object for each lab
@@ -191,44 +169,12 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		System.out.println("");
 		
 		/*
-		 * Count the number of shots for each lab
-		 */
-		/*for (Lab room : labObjects) {
-			System.out.println("Lab: " + room.name + " has " + room.shots.size() + " shots.");
-
-		}
-		
-		System.out.println("");*/
-		
-		/*
-		 * Print the shot details for each lab
-		 */
-		/*for (Lab room : labObjects) {
-			
-			if (room.shots.size() > 0)
-				System.out.println("Lab: " + room.name + " has " + room.shots.size() + " shots.");
-			
-			for (Object app : room.shots) {
-				System.out.println("");
-				System.out.println("<<<BEGIN SHOT DATA>>>");
-				int i = 0;
-				for (RaplaTableColumn column : myColumns) {
-					
-					Object value = column.getValue(app);
-					System.out.println("Column " + i + " value: " + value);
-					i++;
-					
-				}
-				System.out.println("<<<END SHOT DATA>>>");
-				
-			}
-			System.out.println("");
-		}*/
-		
-		/*
 		 * Create a Schedule Sheet for each lab
 		 */
 		SpreadsheetHandler sh = new SpreadsheetHandler();
+		
+		// row counter starts at row 1 in the bulk upload; isolated from loop below as we don't want to reset this counter
+		int j = 1;  
 		
 		for (Lab room : labObjects) {
 						
@@ -237,7 +183,9 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			if (room.shots.size() > 0)
 				System.out.println("Creating schedule for " + room.name);
 			
-			int i = 3;  // row counter that starts at row 3
+			// Row counters; i is for the Schedule worksheet.  j is for the bulk upload worksheet
+			int i = 3;  // row counter starts at row 3 in Schedule
+			
 			
 			// Setup a string to track the day of week
 			Date scheduleDay = startDate;
@@ -300,14 +248,16 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 					i++;
 				}
 				sh.addShotToSchedule(room.name, i, rowFields.get(0), rowFields.get(1), rowFields.get(2), rowFields.get(3), rowFields.get(4));
+				sh.populateBulkUpload("Shot_Template", room.name, j, rowFields.get(0), stringDay, rowFields.get(1), rowFields.get(2), rowFields.get(3), rowFields.get(4));
 				
 				i++;
+				j++;
 			}
 			System.out.println("");
 			
 		}
 		
-		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/TEST.xlsx");  // TODO: set path to user home
+		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/TEST.xlsx", "C:/Users/ktooley/Documents/TEST/BulkUpload.xls");  // TODO: set path to user home
 		
 		
 		/*
@@ -382,7 +332,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		//final String calendarName = getQuery().getSystemPreferences().getEntryAsString(RaplaMainContainer.TITLE, getString("rapla.title"));
 		
 		// Get user home property; TODO: Find method to get MyDocuments directory
-		final String userHome = System.getProperty("user.home");
+		//final String userHome = System.getProperty("user.home");
 		
 		String filename = calendarName + "-" + sdfyyyyMMdd.format( model.getStartDate() )  + "-" + sdfyyyyMMdd.format( model.getEndDate() ) + ".csv";
 		

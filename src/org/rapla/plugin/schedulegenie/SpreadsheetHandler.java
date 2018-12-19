@@ -1,7 +1,11 @@
 package org.rapla.plugin.schedulegenie;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -38,18 +42,19 @@ public class SpreadsheetHandler {
 	
 	// Declare the workbook used for the lab schedules
 	public XSSFWorkbook workbook;
-	public XSSFWorkbook bulkUpload;
+	public HSSFWorkbook bulkUpload;
 	
 	//Constructor
 	public SpreadsheetHandler() throws FileNotFoundException, IOException {
 		// Create a Workbook for Lab schedules
         workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
         
-        //final String userHome = System.getProperty("user.home");
-        //String filePath = userHome + "\\Documents\\nscc_bulk_template.xls";
+        final String userHome = System.getProperty("user.home");
+        String filePath = userHome + "\\Documents\\nscc_bulk_template.xls";
+        System.out.println(filePath);
         
         // Create workbook for bulk upload
-        //bulkUpload = new XSSFWorkbook(new FileInputStream(filePath));
+        bulkUpload = new HSSFWorkbook(new FileInputStream(filePath));
 	}
 	
 	public void createScheduleSheet(String sheetName, String weekStartDate, String weekEndDate) {
@@ -311,7 +316,8 @@ public class SpreadsheetHandler {
             	String buildId = "";
             	for (String res : resourceArray) {
             		if (res.contains("BUILD:")) {
-            			buildId = res.replace(" BUILD: ", "");
+            			String tmp = res.replaceAll("\\s", "");
+            			buildId = tmp.replace("BUILD:", "");
             			break;
             		}
             	}
@@ -326,7 +332,8 @@ public class SpreadsheetHandler {
             	String configId = "";
             	for (String res : resourceArray) {
             		if (res.contains("CONFIG:")) {
-            			configId = res.replace(" CONFIG: ", "");
+            			String tmp = res.replaceAll("\\s", "");
+            			configId = tmp.replace("CONFIG:", "");
             			break;
             		}
             	}
@@ -432,23 +439,27 @@ public class SpreadsheetHandler {
 		
 	}
 	
-	public void closeWorkbook(String filePath) {
+	public void closeWorkbook(String filePath1, String filePath2) {
 		// Write the output to a file
-        FileOutputStream fileOut = null;
+        FileOutputStream fileOut1 = null;
+        FileOutputStream fileOut2 = null;
 		try {
-			fileOut = new FileOutputStream(filePath);
+			fileOut1 = new FileOutputStream(filePath1);
+			fileOut2 = new FileOutputStream(filePath2);
 		} catch (FileNotFoundException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
-			workbook.write(fileOut);
+			workbook.write(fileOut1);
+			bulkUpload.write(fileOut2);
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
         try {
-			fileOut.close();
+			fileOut1.close();
+			fileOut2.close();
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
@@ -457,31 +468,37 @@ public class SpreadsheetHandler {
         // Closing the workbook
         try {
 			workbook.close();
+			bulkUpload.close();
 		} catch (IOException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public void populateBulkUpload(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
+	public void populateBulkUpload(String sheetName, String labName, int rowNumber, String shotName, String date, String startTime, String endTime, String resources, String ri) {
 		
 		// Add row to sheet
-		XSSFSheet bulkUploadSheet = workbook.getSheet("Shot_Template");
+		HSSFSheet bulkUploadSheet = bulkUpload.getSheet(sheetName);
         //XSSFRow newRow = sheet.createRow(rowNumber);
-        XSSFRow newRow = bulkUploadSheet.getRow(rowNumber);
+        //HSSFRow newRow = bulkUploadSheet.getRow(rowNumber);  //.createRow(rowNumber);
+        HSSFRow newRow = bulkUploadSheet.createRow(rowNumber);
         
         // Split the resources for each shot into an array
         String[] resourceArray = resources.split(",");
         
         // Create the cells for the new row
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 18; i++) {
         	
-        	XSSFCell cell = newRow.getCell(i);
+        	//HSSFCell cell = newRow.getCell(i);
+        	HSSFCell cell = newRow.createCell(i);
             
+        	String cellValue = "";  // used to populate cell after switch statement below
+        	String element = "";  // used for case 9 - 14
+        	
             switch(i) {
             
             case 0:
-            	
+            	/*
             	// Split the RI input to evaluate for multiple RI's
             	String[] splitStr = ri.split(",");
             	
@@ -489,17 +506,215 @@ public class SpreadsheetHandler {
             		cell.setCellValue(splitStr[0] + ", " + splitStr[1] + ", " + splitStr[2]);
             	else
             		cell.setCellValue(splitStr[0] + ", " + splitStr[1]);
-            	
+            		*/
+            	//cell.setCellValue(ri);
+            	cellValue = ri;
             	break;
             	
             case 1:
             	
-            	cell.setCellValue(shotName);
-            		
-            
+            	// Sets the "Amplifying Information" field in the bulk upload template
+            	//cell.setCellValue(shotName);
+            	cellValue = shotName;
+            	break;
+            	
+            case 2:
+            	break;
+            case 3:
+            	
+            	/*
+            	 * TODO: Implement a configuration file that contains the CONFIG to BASELINE mapping
+            	 * Read the configuration file at or near startup, then reference the list when populating
+            	 * the bulk upload spreadsheet.
+            	 * 
+            	 * Until implemented, the values below are hard coded
+            	 */
+            	for (String res : resourceArray) {
+            		if (res.contains("CONFIG:")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			String config = tmp.replace("CONFIG:", "");
+            			switch (config) {
+            			
+            			case "ACE":
+            				//cell.setCellValue("USN-ACE");
+            				cellValue = "USN-ACE";
+            				break;
+            			case "BL10_DDG":
+            			case "BL10_CG":
+            				//cell.setCellValue("USN-CSEA ACB20");
+            				cellValue = "USN-CSEA ACB20";
+            				break;
+            			case "BL9_CG":
+            			case "BL9_DDG":
+            				//cell.setCellValue("USN-CSEA ACB16");
+            				cellValue = "USN-CSEA ACB16";
+            				break;
+            			case "BMD50_DDG":
+            				//cell.setCellValue("BMD-BMD5.0 CU Includes FTMs");
+            				cellValue = "BMD-BMD5.0 CU Includes FTMs";
+            				break;
+            			case "AA":
+            			case "DDG113":
+            			case "BMD51_DDG":
+            				//cell.setCellValue("BMD5.1");
+            				cellValue = "BMD5.1";
+            				break;
+            			case "CG_9ON8":
+            				//cell.setCellValue("USN-BL 9o8");
+            				cellValue = "USN-BL 9o8";
+            				break;
+            				
+            			}
+            		}
+            	}
+            	break;
+            case 4:
+            	for (String res : resourceArray) {
+            		if (res.contains("TE:")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			cellValue = tmp.replace("TE:", "");
+            			break;
+            		}
+            	}
+            	break;
+            	
+            case 5:
+            	for (String res : resourceArray) {
+            		if (res.contains("ELEMENT:")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			cellValue = tmp.replace("ELEMENT:", "");
+            			break;
+            		}
+            	}
+            	break;
+            case 6:
+            	//cell.setCellValue(date);
+            	cellValue = date;
+            	break;
+            	
+            case 7:
+            	//cell.setCellValue(startTime);
+            	cellValue = startTime;
+            	break;
+            	
+            case 8:
+            	//cell.setCellValue(endTime);
+            	cellValue = endTime;
+            	break;
+            	
+            // TODO: Produce a configuration file that will specify the settings below.  	
+            case 9:
+            	// If LBTS or SUITE B shot, skip past case 10-14
+            	if (labName == "LBTS") {
+            		i = 14;
+            		cellValue = "LBTS";
+            	}
+            	else if (labName == "SUITE_B") {
+            		i = 14;
+            		cellValue = "SUITE B";
+            	}
+            	else {
+            		element = "CND";
+                	cellValue = getLabName(labName) + " " + element;
+            	}
+            	
+            	
+            	
+            	
+            	break;
+            	
+            case 10:
+            	element = "WCS";
+            	cellValue = getLabName(labName) + " " + element;
+            	break;
+            case 11:
+            	element = "SPY";
+            	cellValue = getLabName(labName) + " " + element;
+            	break;
+            case 12:
+            	element = "ADS";
+            	cellValue = getLabName(labName) + " " + element;
+            	break;
+            case 13:
+            	element = "ACTS";
+            	cellValue = getLabName(labName) + " " + element;
+            	break;
+            case 14:
+            	element = "ORTS";
+            	cellValue = getLabName(labName) + " " + element;
+            	break;
+            case 15:
+            	for (String res : resourceArray) {
+            		if (res.contains("CDLMS") || res.contains("UMG")) {
+            			cellValue = res.replaceAll("\\s", "");
+            			break;
+            		}
+            	}
+            	break;
+            case 16:
+            	for (String res : resourceArray) {
+            		if (res.contains("CDLMS")) {
+            			cellValue = "MLST3 (" + res.replaceAll("\\s", "") + ")";
+            			break;
+            		}
+            		else if (res.contains("UMG1")) {
+            			cellValue = "UMG-1 SUPPORT";
+            			break;
+            		}
+            		else if (res.contains("UMG2")) {
+            			cellValue = "UMG-2 SUPPORT";
+            			break;
+            		}
+            	}
+            	break;
+            case 17:
+            	for (String res : resourceArray) {
+            		if (res.contains("LIVE CEC")) {
+            			cellValue = "LIVE CEC/WASP";
+            			break;
+            		}
+            	}
+            	break;
+            	
             }
+            
+            // If if statement added to format the output properly for the start and end time
+            if (i == 7 || i == 8)
+            	cell.setCellValue(Integer.parseInt(cellValue));
+            else
+            	cell.setCellValue(cellValue);
         	
         }
+		
+	}
+	
+	private String getLabName(String labName) {
+		
+		String lab = "";
+		switch (labName) {
+    	
+    	case "AMOD1":
+    		lab = "AMOD NSCC TI12 SUITE 1";
+    		break;
+    	case "BL10_SUITE":
+    		lab = "NSCC BL10";
+    		break;
+    	case "LBTS":
+    		lab = "LBTS";
+    		break;
+    	case "TI12H":
+    		lab = "NSCC TI12H";
+    		break;
+    	case "SUITE_B":
+    		lab = "SUITE B";
+    		break;
+    	case "TI16":
+    		lab = "NSCC TI16";
+    		break;
+    		
+    	}
+		
+		return lab;
 		
 	}
 
