@@ -289,8 +289,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Get user home property; TODO: Find method to get MyDocuments directory
 		final String userHome = System.getProperty("user.home");
 		
-		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( getDate(model.getStartDate(), true) ) + scheduleName + ".xlsx";
-		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls"; //FIXME: Bulk upload date is wrong
+		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 		
 		
 		sh.closeWorkbook(scheduleFilename, bulkFilename);
