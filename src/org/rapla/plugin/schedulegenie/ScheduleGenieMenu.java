@@ -267,7 +267,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 		
 		
-		sh.closeWorkbook(scheduleFilename, bulkFilename);  // TODO: Create method to prompt user with dialog box
+		sh.closeWorkbook(scheduleFilename, bulkFilename);
 		
 		exportFinished(getMainComponent());
 		

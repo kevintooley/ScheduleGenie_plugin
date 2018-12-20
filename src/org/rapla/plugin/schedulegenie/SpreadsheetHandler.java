@@ -40,6 +40,11 @@ import jxl.write.*;
 import jxl.write.Number;
 import jxl.write.biff.RowsExceededException; 
 
+/**
+ * Handles all operations regarding the MS Excel Spreadsheets
+ * @author Kevin Tooley
+ * @version 1.0.0
+ */
 public class SpreadsheetHandler {
 	
 	// Declare the workbook used for the lab schedules
@@ -48,11 +53,20 @@ public class SpreadsheetHandler {
 	
 	private boolean isUnitTest;
 	
+	/**
+	 * Accessor method for the private isUnitTest boolean
+	 * @return isUnitTest boolean
+	 */
 	public boolean isUnitTest() {
 		return isUnitTest;
 	}
 
-	//Constructor
+	/**
+	 * Constructor of the SpreadsheetHandler object
+	 * @param isTest denotes a unit test
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	public SpreadsheetHandler(boolean isTest) throws FileNotFoundException, IOException {
 		
 		// Set unit test flag
@@ -69,6 +83,12 @@ public class SpreadsheetHandler {
         bulkUpload = new HSSFWorkbook(new FileInputStream(filePath));
 	}
 	
+	/**
+	 * Creates the 3 header rows at the top of each sheet in the excel workbook
+	 * @param sheetName
+	 * @param weekStartDate
+	 * @param weekEndDate
+	 */
 	public void createScheduleSheet(String sheetName, String weekStartDate, String weekEndDate) {
 
         /* CreationHelper helps us create instances of various things like DataFormat, 
@@ -220,6 +240,13 @@ public class SpreadsheetHandler {
         }	
 	}
 	
+	/**
+	 * This method creates a new date row for each day in the excel schedule
+	 * @param sheetName
+	 * @param rowNumber
+	 * @param day
+	 * @param date
+	 */
 	public void createDateRow(String sheetName, int rowNumber, String day, String date) {
 		
         // Create a Font for styling header cells
@@ -259,6 +286,16 @@ public class SpreadsheetHandler {
 		
 	}
 	
+	/**
+	 * After the main function has created the lab and test shot objects, the test shot is passed to this method to get added to the excel spreadsheet.  
+	 * @param sheetName
+	 * @param rowNumber
+	 * @param shotName
+	 * @param startTime
+	 * @param endTime
+	 * @param resources
+	 * @param ri
+	 */
 	public void addShotToSchedule(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
 		
 		// Create a Font for styling new row
@@ -450,7 +487,13 @@ public class SpreadsheetHandler {
 		
 	}
 	
-	// TODO: Add dialog box if files exist
+	/**
+	 * Saves the workbooks using a FileOutputStream. The stream is created and the workbooks are written
+	 * to the stream.  The Bulk Upload spreadsheet will always receive the same file name, but the 
+	 * Schedule spreadsheet will allow the user to change the file for numerous revisions. 
+	 * @param scheduleFilePath absolute path string
+	 * @param bulkFilePath absolute path string
+	 */
 	public void closeWorkbook(String scheduleFilePath, String bulkFilePath) {
 		// Write the output to a file
         FileOutputStream scheduleOutStream = null;
@@ -490,6 +533,12 @@ public class SpreadsheetHandler {
 		}
 	}
 	
+	/**
+	 * Uses JFileChooser swing extension to open a dialog box.  Default location is set to 
+	 * <user_home>\Documents\ScheduleGenie_Zeta directory.
+	 * @param suggestedFileName
+	 * @return
+	 */
 	public String chooseFile(String suggestedFileName) {
 		
 		JFileChooser fileChooser = new JFileChooser();
@@ -509,19 +558,21 @@ public class SpreadsheetHandler {
 		}
 		return "failed";
 		
-		/*JFileChooser chooser = new JFileChooser();
-	    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-	        "JPG & GIF Images", "jpg", "gif");
-	    chooser.setFileFilter(filter);
-	    int returnVal = chooser.showOpenDialog(parent);
-	    if(returnVal == JFileChooser.APPROVE_OPTION) {
-	       System.out.println("You chose to open this file: " +
-	            chooser.getSelectedFile().getName());
-	    }*/
-
-		
 	}
 	
+	/**
+	 * After the main function creates the objects and parses the database, each shot is sent to this method.
+	 * This method simply loops through each cell in a given row and assigns the given values to the cell.
+	 * @param sheetName hard coded to "Shot_Template"
+	 * @param labName
+	 * @param rowNumber
+	 * @param shotName
+	 * @param date
+	 * @param startTime
+	 * @param endTime
+	 * @param resources
+	 * @param ri
+	 */
 	public void populateBulkUpload(String sheetName, String labName, int rowNumber, String shotName, String date, String startTime, String endTime, String resources, String ri) {
 		
 		// Add row to sheet
@@ -732,6 +783,14 @@ public class SpreadsheetHandler {
 		
 	}
 	
+	/**
+	 * This is a temporary private method to assign the appropriate text to a given lab.  
+	 * This is only temporary as this function needs to be in a configuration file that the user can adjust
+	 * rather than hard coding this data.
+	 * TODO: Create configuration file for this data
+	 * @param labName
+	 * @return string for the TSSS template
+	 */
 	private String getLabName(String labName) {
 		
 		String lab = "";
