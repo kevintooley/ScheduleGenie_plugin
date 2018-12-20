@@ -104,13 +104,31 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Create user; needed for LoadColumns API
 		User myUser = model.getUser();
 		
+		// Set the date in the model based on the current view in Rapla
+		Calendar calExp = Calendar.getInstance();
+		calExp.setTime(model.getSelectedDate());
+		
+		// Set to Monday at midnight of the given week
+		calExp.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		calExp.set(Calendar.HOUR, 0);
+		calExp.set(Calendar.AM_PM, Calendar.AM);
+		calExp.set(Calendar.MINUTE, 0);
+		calExp.set(Calendar.SECOND, 0);
+		
+		Date newStart = calExp.getTime();
+		model.setStartDate(newStart);
+		
+		Date newEnd = getDate(newStart, false);
+		model.setEndDate(newEnd);
+		
 		/*
 		 * The model.getStartDate().toLocaleString() method is not returning the correct time stamp.  It 
 		 * seems to be returning GMT.  As a result, I needed to use the below calculations/methods in order
 		 * to produce startDate and endDate.  
 		 * FIXME: fix the toLocaleString method
 		 */
-		Date startDate = getDate(model.getStartDate(), true);
+		//Date startDate = getDate(model.getStartDate(), true);
+		Date startDate = model.getStartDate();
 		//System.out.println("Start date: " + startDate);
 		
 		Date endDate = getDate(startDate, false);
@@ -127,6 +145,14 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Add all appointment blocks to a list of objects
 		List<Object> myObjects = new ArrayList<Object>();
 		final List<AppointmentBlock> myBlocks = model.getBlocks();
+		
+		// Add appointments to the myObjects list, but only add appointments for the current week
+		// Deprecated after addition start and end time modifications above
+		/*for (AppointmentBlock block : myBlocks) {
+			if (block.getAppointment().getStart().before(endDate))
+				myObjects.add(block);
+		}*/
+		
 		myObjects.addAll(myBlocks);
 		
 		/*
@@ -178,8 +204,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 						
 			sh.createScheduleSheet(room.name, formatShortDate(startDate), formatShortDate(endDate));
 			
-			if (room.shots.size() > 0)
-				System.out.println("Creating schedule for " + room.name);
+			//if (room.shots.size() > 0)
+			//	System.out.println("Creating schedule for " + room.name);
 			
 			int i = 3;  // row counter starts at row 3 in Schedule; this counter resets for each sheet
 			
@@ -196,8 +222,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 				SimpleDateFormat format = new SimpleDateFormat("HHmm");
 				format.setTimeZone( getRaplaLocale().getTimeZone());
 				
-				System.out.println("");
-				System.out.println("<<<BEGIN SHOT DATA>>>");
+				//System.out.println("");
+				//System.out.println("<<<BEGIN SHOT DATA>>>");
 				
 				for (RaplaTableColumn column : myColumns) {
 					
@@ -234,10 +260,10 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		    		}
 		    		
 					rowFields.add(formated);
-					System.out.println("value " + formated + " moved to list");
+					//System.out.println("value " + formated + " moved to list");
 					
 				}
-				System.out.println("<<<END SHOT DATA>>>");
+				//System.out.println("<<<END SHOT DATA>>>");
 				
 				if (incrementDay) {
 					sh.createDateRow(room.name, i, getDayOfWeek(scheduleDay), stringDay);
@@ -250,7 +276,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 				i++;
 				j++;
 			}
-			System.out.println("");
+			//System.out.println("");
 			
 		}
 		
@@ -264,102 +290,12 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		final String userHome = System.getProperty("user.home");
 		
 		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( getDate(model.getStartDate(), true) ) + scheduleName + ".xlsx";
-		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls"; //FIXME: Bulk upload date is wrong
 		
 		
 		sh.closeWorkbook(scheduleFilename, bulkFilename);
 		
 		exportFinished(getMainComponent());
-		
-		/*
-		 * 
-		 * SANDBOX END
-		 * 
-		 */
-		
-		/* OLD EXPORT FUNCTION
-	    // generates a text file from all filtered events;
-	    StringBuffer buf = new StringBuffer();
-	    
-	    // Setup collections
-	    Collection< ? extends RaplaTableColumn<?>> columns;
-	    List<Object> objects = new ArrayList<Object>();
-	    User user = model.getUser();
-	    
-	    // Export conditions depending on view; likely won't be applicable due to the manner that we use Rapla
-	    if (model.getViewId().equals(ReservationTableViewFactory.TABLE_VIEW))
-	    {
-	    	columns = TableConfig.loadColumns(getContainer(),"events",TableViewExtensionPoints.RESERVATION_TABLE_COLUMN, user);
-		    objects.addAll(Arrays.asList( model.getReservations())); 
-	    }
-	    else
-	    {
-	        columns = TableConfig.loadColumns(getContainer(),"appointments",TableViewExtensionPoints.APPOINTMENT_TABLE_COLUMN, user);
-		    final List<AppointmentBlock> blocks = model.getBlocks();
-            objects.addAll( blocks); 
-	    }
-	    
-	    // Export column names
-	    for (RaplaTableColumn column: columns)
-    	{
-	    	buf.append( column.getColumnName());
-	    	buf.append(CELL_BREAK);
-    	}
-	    
-	    // Export Reservations
-	    for (Object row: objects)
-	    {
-	    	buf.append(LINE_BREAK);
-	    	for (RaplaTableColumn column: columns)
-	    	{
-	    		Object value = column.getValue( row);
-	    		Class columnClass = column.getColumnClass();
-	    		boolean isDate = columnClass.isAssignableFrom( java.util.Date.class);
-	    		String formated = "";
-	    		if(value != null) {
-					if ( isDate)
-					{ 
-						SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						format.setTimeZone( getRaplaLocale().getTimeZone());
-						String timestamp = format.format(   (java.util.Date)value);
-						formated = timestamp;
-					}
-					else
-					{
-						String escaped = escape(value);
-						formated = escaped;
-					}
-	    		}
-				buf.append( formated );
-	    	   	buf.append(CELL_BREAK);
-	    	}
-	    }
-	    
-        byte[] bytes = buf.toString().getBytes();
-        
-		DateFormat sdfyyyyMMdd = new SimpleDateFormat("yyyyMMdd");
-		
-		// Use a simple string for the filename instead of the long sequence commented below
-		final String calendarName = "ScheduleGenieCSV";
-		//final String calendarName = getQuery().getSystemPreferences().getEntryAsString(RaplaMainContainer.TITLE, getString("rapla.title"));
-		
-		// Get user home property
-		//final String userHome = System.getProperty("user.home");
-		
-		String filename = calendarName + "-" + sdfyyyyMMdd.format( model.getStartDate() )  + "-" + sdfyyyyMMdd.format( model.getEndDate() ) + ".csv";
-		
-		// Keeping the below filename as individual piece as this works better for the resultant SaveAs dialog box
-		// By concatenating userHome\Documents\filename together, it throws off the dialog box and makes it more
-		// difficult for the user
-		if (saveFile( bytes, userHome + "\\Documents\\" + filename,"csv"))
-		{
-			exportFinished(getMainComponent());
-		}
-		
-		// Call the InputHandler to start parsing the input CSV file
-		InputHandler handler = new InputHandler();
-		handler.parseCsv(userHome + "\\Documents\\" + filename);  // See note above describing reason for this filename
-		*/
 		
 	}
 
