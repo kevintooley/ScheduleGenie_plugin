@@ -18,6 +18,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -561,6 +563,11 @@ public class SpreadsheetHandler {
 	 */
 	public void populateBulkUpload(String sheetName, String labName, int rowNumber, String shotName, String date, String startTime, String endTime, String resources, String ri) {
 		
+		// Get the lab configuration from the config file
+		InputHandler labConfig = new InputHandler();
+		labConfig.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "lab_configuration.cfg"));	
+		final LinkedList<LabMapping> LAB_MAPS = labConfig.getMapping();
+		
 		// Add row to sheet
 		HSSFSheet bulkUploadSheet = bulkUpload.getSheet(sheetName);
         //XSSFRow newRow = sheet.createRow(rowNumber);
@@ -577,7 +584,6 @@ public class SpreadsheetHandler {
         	HSSFCell cell = newRow.createCell(i);
             
         	String cellValue = "";  // used to populate cell after switch statement below
-        	String element = "";  // used for case 9 - 14
         	
             switch(i) {
             
@@ -685,44 +691,50 @@ public class SpreadsheetHandler {
             	//cell.setCellValue(endTime);
             	cellValue = endTime;
             	break;
-            	
-            // TODO: Produce a configuration file that will specify the settings below.  	
+            	 	
             case 9:
-            	// If LBTS or SUITE B shot, skip past case 10-14
-            	if (labName.equals("LBTS")) {
-            		i = 14;
-            		cellValue = "LBTS";
-            	}
-            	else if (labName.equals("SUITE_B")) {
-            		i = 14;
-            		cellValue = "SUITE B";
-            	}
-            	else {
-            		element = "CND";
-                	cellValue = getLabName(labName) + " " + element;
+            	
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name1();
             	}
 
             	break;
             	
             case 10:
-            	element = "WCS";
-            	cellValue = getLabName(labName) + " " + element;
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name2();
+            	}
+
             	break;
             case 11:
-            	element = "SPY";
-            	cellValue = getLabName(labName) + " " + element;
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name3();
+            	}
+
             	break;
             case 12:
-            	element = "ADS";
-            	cellValue = getLabName(labName) + " " + element;
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name4();
+            	}
+
             	break;
             case 13:
-            	element = "ACTS";
-            	cellValue = getLabName(labName) + " " + element;
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name5();
+            	}
+
             	break;
             case 14:
-            	element = "ORTS";
-            	cellValue = getLabName(labName) + " " + element;
+            	for (LabMapping lab : LAB_MAPS) {
+            		if (lab.getCommon_name().equals(labName))
+            			cellValue = lab.getTsss_name6();
+            	}
+
             	break;
             case 15:
             	for (String res : resourceArray) {
@@ -766,44 +778,6 @@ public class SpreadsheetHandler {
             	cell.setCellValue(cellValue);
         	
         }
-		
-	}
-	
-	/**
-	 * This is a temporary private method to assign the appropriate text to a given lab.  
-	 * This is only temporary as this function needs to be in a configuration file that the user can adjust
-	 * rather than hard coding this data.
-	 * TODO: Create configuration file for this data
-	 * @param labName
-	 * @return string for the TSSS template
-	 */
-	private String getLabName(String labName) {
-		
-		String lab = "";
-		switch (labName) {
-    	
-    	case "AMOD1":
-    		lab = "AMOD NSCC TI12 SUITE 1";
-    		break;
-    	case "BL10_SUITE":
-    		lab = "NSCC BL10";
-    		break;
-    	case "LBTS":
-    		lab = "LBTS";
-    		break;
-    	case "TI12H":
-    		lab = "NSCC TI12H";
-    		break;
-    	case "SUITE_B":
-    		lab = "SUITE B";
-    		break;
-    	case "TI16":
-    		lab = "NSCC TI16";
-    		break;
-    		
-    	}
-		
-		return lab;
 		
 	}
 

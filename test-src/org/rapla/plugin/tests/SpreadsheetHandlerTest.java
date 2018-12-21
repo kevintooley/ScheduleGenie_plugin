@@ -170,11 +170,11 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(9).getStringCellValue().equals("LBTS"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(10) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(11) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(12) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(13) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(14) == null);
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(10).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(11).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(12).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(13).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(14).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(15).getStringCellValue().equals("CDLMS2"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(16).getStringCellValue().equals("MLST3 (CDLMS2)"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(17).getStringCellValue().equals(""));
@@ -189,11 +189,11 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(9).getStringCellValue().equals("SUITE B"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(10) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(11) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(12) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(13) == null);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(14) == null);
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(10).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(11).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(12).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(13).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(14).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(15).getStringCellValue().equals("UMG1"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(16).getStringCellValue().equals("UMG-1 SUPPORT"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(17).getStringCellValue().equals("LIVE CEC/WASP"));
@@ -240,7 +240,7 @@ public class SpreadsheetHandlerTest {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void testChooseWorkbook() throws FileNotFoundException, IOException {
 		
 		SpreadsheetHandler sh = new SpreadsheetHandler(false);
@@ -248,6 +248,6 @@ public class SpreadsheetHandlerTest {
 		// operator must choose the file below to pass
 		assertTrue(sh.chooseFile("TEST_FILE.xlsx").equals("C:\\Users\\ktooley\\Documents\\nscc_bulk_template.xls"));
 		
-	}
+	}*/
 
 }
