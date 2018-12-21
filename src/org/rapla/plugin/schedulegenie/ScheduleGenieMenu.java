@@ -1,45 +1,35 @@
 package org.rapla.plugin.schedulegenie;
 
-//TODO Remove unused imports
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 
-import org.rapla.RaplaMainContainer;
 import org.rapla.components.iolayer.IOInterface;
 import org.rapla.entities.User;
 import org.rapla.entities.domain.Allocatable;
-import org.rapla.entities.domain.Appointment;
 import org.rapla.entities.domain.AppointmentBlock;
-import org.rapla.entities.domain.Reservation;
 import org.rapla.facade.CalendarSelectionModel;
 import org.rapla.framework.RaplaContext;
-import org.rapla.framework.RaplaDefaultContext;
 import org.rapla.framework.RaplaException;
 import org.rapla.gui.RaplaGUIComponent;
 import org.rapla.gui.toolkit.DialogUI;
 import org.rapla.gui.toolkit.IdentifiableMenuEntry;
 import org.rapla.plugin.tableview.RaplaTableColumn;
 import org.rapla.plugin.tableview.TableViewExtensionPoints;
-import org.rapla.plugin.tableview.internal.ReservationTableViewFactory;
 import org.rapla.plugin.tableview.internal.TableConfig;
-import org.rapla.storage.xml.RaplaMainReader;
 
 /**
  * The ScheduleGenieMenu class adds the menu and passes the calendar view data to the InputHandler class for processing
@@ -93,7 +83,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	 * @param model is the object representing the Rapla data
 	 * @throws Exception
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes", "deprecation" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void export(final CalendarSelectionModel model) throws Exception
 	{
 				

@@ -1,18 +1,13 @@
 package org.rapla.plugin.schedulegenie;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDataFormatter;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
@@ -23,22 +18,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
-import jxl.*;
-import jxl.write.*;
-import jxl.write.Number;
-import jxl.write.biff.RowsExceededException; 
+import java.io.FileNotFoundException; 
 
 /**
  * Handles all operations regarding the MS Excel Spreadsheets
@@ -93,7 +78,8 @@ public class SpreadsheetHandler {
 
         /* CreationHelper helps us create instances of various things like DataFormat, 
            Hyperlink, RichTextString etc, in a format (HSSF, XSSF) independent way */
-        XSSFCreationHelper createHelper = workbook.getCreationHelper();
+        @SuppressWarnings("unused")
+		XSSFCreationHelper createHelper = workbook.getCreationHelper();
 
         // Create a Sheet
         XSSFSheet sheet = workbook.createSheet(sheetName);
