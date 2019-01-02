@@ -74,7 +74,7 @@ final public class LoadingProgress {
 				return (flags & (ALLBITS | ABORT | ERROR)) == 0;
 			}
 		};
-		frame.setBackground(new Color(255, 255, 204));
+		frame.setBackground(new Color(192, 192, 192));
 		canvas = new Component()
 		{
 			private static final long	serialVersionUID	= 1L;
@@ -89,13 +89,13 @@ final public class LoadingProgress {
 		
 		// Variables (integer pixels) for...
 		// ... the width of the border around the picture
-		int borderwidth = 4;
+		int borderwidth = 10;
 		// ... the height of the border around the picture
-		int borderheight = 4;
+		int borderheight = 10;
 		// ... the width of the picture within the frame
-		int picturewidth = 356;
+		int picturewidth = 350;
 		// ... the height of the picture within the frame
-		int pictureheight = 182;
+		int pictureheight = 420;
 		// ... calculating the frame width
 		int framewidth = borderwidth + borderheight + picturewidth;
 		// ... calculating the frame height
@@ -112,7 +112,7 @@ final public class LoadingProgress {
 		progressBar = new JProgressBar(0, maxValue);
 		progressBar.setValue(startValue);
 		// set the bounds to position the progressbar and set width and height
-		progressBar.setBounds(158, 130, progresswidth, progressheight);
+		progressBar.setBounds(200, 380, progresswidth, progressheight);
 		progressBar.repaint();
 		
 		// we have to add the progressbar first to get it infront of the picture
