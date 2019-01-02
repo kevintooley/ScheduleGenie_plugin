@@ -565,8 +565,10 @@ public class SpreadsheetHandler {
 		
 		// Get the lab configuration from the config file
 		InputHandler labConfig = new InputHandler();
-		labConfig.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "lab_configuration.cfg"));	
+		labConfig.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "lab_configuration.cfg"));
+		labConfig.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "configuration_mapping.cfg"));
 		final LinkedList<LabMapping> LAB_MAPS = labConfig.getMapping();
+		final LinkedList<ConfigMapping> CONFIG_MAPS = labConfig.getConfigMapping();
 		
 		// Add row to sheet
 		HSSFSheet bulkUploadSheet = bulkUpload.getSheet(sheetName);
@@ -613,48 +615,20 @@ public class SpreadsheetHandler {
             case 3:
             	
             	/*
-            	 * TODO: Implement a configuration file that contains the CONFIG to BASELINE mapping
-            	 * Read the configuration file at or near startup, then reference the list when populating
-            	 * the bulk upload spreadsheet.
-            	 * 
-            	 * Until implemented, the values below are hard coded
+            	 * Look in each item of the resourceArray.
+            	 * If the resource is a "CONFIG:" resource, parse the item and remove whitespace
+            	 * Search the CONFIG_MAP to find the appropriate mapping for the TSSS
             	 */
             	for (String res : resourceArray) {
             		if (res.contains("CONFIG:")) {
             			String tmp = res.replaceAll("\\s", "");
             			String config = tmp.replace("CONFIG:", "");
-            			switch (config) {
             			
-            			case "ACE":
-            				//cell.setCellValue("USN-ACE");
-            				cellValue = "USN-ACE";
-            				break;
-            			case "BL10_DDG":
-            			case "BL10_CG":
-            				//cell.setCellValue("USN-CSEA ACB20");
-            				cellValue = "USN-CSEA ACB20";
-            				break;
-            			case "BL9_CG":
-            			case "BL9_DDG":
-            				//cell.setCellValue("USN-CSEA ACB16");
-            				cellValue = "USN-CSEA ACB16";
-            				break;
-            			case "BMD50_DDG":
-            				//cell.setCellValue("BMD-BMD5.0 CU Includes FTMs");
-            				cellValue = "BMD-BMD5.0 CU Includes FTMs";
-            				break;
-            			case "AA":
-            			case "DDG113":
-            			case "BMD51_DDG":
-            				//cell.setCellValue("BMD5.1");
-            				cellValue = "BMD5.1";
-            				break;
-            			case "CG_9ON8":
-            				//cell.setCellValue("USN-BL 9o8");
-            				cellValue = "USN-BL 9o8";
-            				break;
-            				
-            			}
+            			for (ConfigMapping configMap : CONFIG_MAPS) {
+                    		if (configMap.getCommon_config_name().equals(config))
+                    			cellValue = configMap.getTsss_config_name();
+                    	}
+            			break;
             		}
             	}
             	break;
@@ -678,17 +652,17 @@ public class SpreadsheetHandler {
             	}
             	break;
             case 6:
-            	//cell.setCellValue(date);
+
             	cellValue = date;
             	break;
             	
             case 7:
-            	//cell.setCellValue(startTime);
+
             	cellValue = startTime;
             	break;
             	
             case 8:
-            	//cell.setCellValue(endTime);
+
             	cellValue = endTime;
             	break;
             	 	

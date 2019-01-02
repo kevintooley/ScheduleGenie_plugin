@@ -9,14 +9,14 @@ import org.rapla.plugin.schedulegenie.InputHandler;
 public class InputHandlerTest {
 
 	@Test
-	public void testParseCsv() {
+	public void testParseCsv_LABS() {
 		
 		System.out.println("Starting InputHandler test");
 		
 		InputHandler ih = new InputHandler();
 		
 		//ih.parseCsv(file);
-		ih.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "lab_configuration.cfg"));		        
+		ih.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "lab_configuration.cfg"));
 		
 		/*for (LabMapping	lab : ih.getMapping()) {
 			System.out.println(lab.toString());
@@ -96,7 +96,57 @@ public class InputHandlerTest {
 		assertTrue(ih.getMapping().get(5).getTsss_name9() == null);
 		assertTrue(ih.getMapping().get(5).getTsss_name10() == null);
 		
-		System.out.println("Finished InputHandler test");
+		System.out.println("Finished InputHandler test (lab_mapping)");
+		
+		//ih.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "configuration_mapping.cfg"));
+	}
+	
+	@Test
+	public void testParseCsv_CONFIGS() {
+		
+		System.out.println("Starting InputHandler test");
+		
+		InputHandler ih1 = new InputHandler();
+		
+		//ih.parseCsv(file);
+		ih1.parseCsv(new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "configuration_mapping.cfg"));		        
+		//ih1.parseCsv(new File("U:\\repos\\ScheduleGeniePlugin\\rapla\\data\\lab_configuration.cfg"));
+		
+		//for (LabMapping	lab : ih.getMapping()) {
+		//	System.out.println(lab.toString());
+		//}
+		//System.out.println("Shot List size = " + ih.getMapping().size());
+		
+		assertTrue(ih1.getConfigMapping().size() == 9);
+		
+		assertTrue(ih1.getConfigMapping().get(0).getCommon_config_name().equals("AA"));
+		assertTrue(ih1.getConfigMapping().get(0).getTsss_config_name().equals("BMD5.1"));
+		
+		assertTrue(ih1.getConfigMapping().get(1).getCommon_config_name().equals("ACE"));
+		assertTrue(ih1.getConfigMapping().get(1).getTsss_config_name().equals("USN-ACE"));
+		
+		assertTrue(ih1.getConfigMapping().get(2).getCommon_config_name().equals("BL10_DDG"));
+		assertTrue(ih1.getConfigMapping().get(2).getTsss_config_name().equals("USN-CSEA ACB20"));
+		
+		assertTrue(ih1.getConfigMapping().get(3).getCommon_config_name().equals("BL10_CG"));
+		assertTrue(ih1.getConfigMapping().get(3).getTsss_config_name().equals("USN-CSEA ACB20"));
+		
+		assertTrue(ih1.getConfigMapping().get(4).getCommon_config_name().equals("BL9_DDG"));
+		assertTrue(ih1.getConfigMapping().get(4).getTsss_config_name().equals("USN-CSEA ACB16"));
+		
+		assertTrue(ih1.getConfigMapping().get(5).getCommon_config_name().equals("BL9_CG"));
+		assertTrue(ih1.getConfigMapping().get(5).getTsss_config_name().equals("USN-CSEA ACB16"));
+		
+		assertTrue(ih1.getConfigMapping().get(6).getCommon_config_name().equals("BMD50_DDG"));
+		assertTrue(ih1.getConfigMapping().get(6).getTsss_config_name().equals("BMD-BMD5.0 CU Includes FTMs"));
+		
+		assertTrue(ih1.getConfigMapping().get(7).getCommon_config_name().equals("BMD51_DDG"));
+		assertTrue(ih1.getConfigMapping().get(7).getTsss_config_name().equals("BMD5.1"));
+		
+		assertTrue(ih1.getConfigMapping().get(8).getCommon_config_name().equals("CG_9ON8"));
+		assertTrue(ih1.getConfigMapping().get(8).getTsss_config_name().equals("USN-BL 9o8"));
+		
+		System.out.println("Finished InputHandler test (config_mapping)");
 	}
 
 }

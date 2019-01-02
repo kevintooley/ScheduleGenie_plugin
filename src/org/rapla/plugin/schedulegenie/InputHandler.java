@@ -30,10 +30,12 @@ public class InputHandler {
 	// LinkedList to hold CPTS Lab to Test Site Scheduling System (TSSS) lab identifiers
 	private LinkedList<LabMapping> LAB_MAPS = new LinkedList<LabMapping>();  // Holds items parsed from cfg	
 	
+	// LinkedList to hold the configuration mappings for the TSSS
+	private LinkedList<ConfigMapping> CONFIG_MAPS = new LinkedList<ConfigMapping>();
+	
 	/**
-	 * Using Super CSV, parse the input file (i.e. CSV export from Rapla).  TestShot members must match the inputs from the CSV.
-	 * Additional fields will need to be handled with a code change.
-	 * Additional resources are not an issue and will be part of the Resources string.
+	 * Parse the given config file using SuperCSV
+	 * @param filename
 	 */
 	public void parseCsv(File filename) {
 		
@@ -44,16 +46,29 @@ public class InputHandler {
         {
             // the header elements are used to map the values to the bean
 			beanReader.getHeader(true);
-
-			// Manually setting the header names because we don't want to read the last column
-            final String[] headers = new String[]{"common_name","tsss_name1","tsss_name2","tsss_name3","tsss_name4","tsss_name5","tsss_name6","tsss_name7","tsss_name8","tsss_name9","tsss_name10"};
-            final CellProcessor[] processors = getProcessors();
- 
-            // Add test shots to the LinkedList
-            LabMapping lab;
-            while ((lab = beanReader.read(LabMapping.class, headers, processors)) != null) {
-            	LAB_MAPS.add(lab);
-            }
+			
+			if (filename.getName().contains("lab_configuration")) {
+				// Manually setting the header names because we don't want to read the last column
+	            final String[] headers = new String[]{"common_name","tsss_name1","tsss_name2","tsss_name3","tsss_name4","tsss_name5","tsss_name6","tsss_name7","tsss_name8","tsss_name9","tsss_name10"};
+	            final CellProcessor[] processors = getProcessors();
+	 
+	            // Add test shots to the LinkedList
+	            LabMapping lab;
+	            while ((lab = beanReader.read(LabMapping.class, headers, processors)) != null) {
+	            	LAB_MAPS.add(lab);
+	            }
+			}
+			else if (filename.getName().contains("map")) {
+				// Manually setting the header names because we don't want to read the last column
+	            final String[] headers = new String[]{"common_config_name","tsss_config_name"};
+	            final CellProcessor[] processors = getConfigProcessors();
+	 
+	            // Add test shots to the LinkedList
+	            ConfigMapping config;
+	            while ((config = beanReader.read(ConfigMapping.class, headers, processors)) != null) {
+	            	CONFIG_MAPS.add(config);
+	            }
+			}
         } catch (FileNotFoundException e) {
 			// Auto-generated catch block
 			e.printStackTrace();
@@ -64,7 +79,7 @@ public class InputHandler {
 	}
 	
 	/**
-     * Sets up the processors used for the columns.
+     * Sets up the processors used for the lab_configuration
      */
     private static CellProcessor[] getProcessors() {
         final CellProcessor[] processors = new CellProcessor[] {
@@ -82,6 +97,17 @@ public class InputHandler {
         };
         return processors;
     }
+    
+    /**
+     * Sets up the processors used for the configuration_mapping
+     */
+    private static CellProcessor[] getConfigProcessors() {
+        final CellProcessor[] processors = new CellProcessor[] {
+                new NotNull(), // common_config_name
+                new NotNull(), // tsss_config_name
+        };
+        return processors;
+    }
 
     /**
      * Return the list of lab to TSSS mappings contained in the cfg file
@@ -89,6 +115,14 @@ public class InputHandler {
      */
 	public LinkedList<LabMapping> getMapping() {
 		return LAB_MAPS;
+	}
+	
+	/**
+     * Return the list of lab to TSSS mappings contained in the cfg file
+     * @return LinkedList that contains the mappings
+     */
+	public LinkedList<ConfigMapping> getConfigMapping() {
+		return CONFIG_MAPS;
 	}
 
 }

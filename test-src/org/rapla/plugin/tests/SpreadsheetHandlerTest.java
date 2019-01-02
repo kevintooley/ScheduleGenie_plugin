@@ -169,12 +169,12 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(6).getStringCellValue().equals("12/19/2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(8).getNumericCellValue() == 900);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(9).getStringCellValue().equals("LBTS"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(10).getStringCellValue().equals(""));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(11).getStringCellValue().equals(""));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(12).getStringCellValue().equals(""));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(13).getStringCellValue().equals(""));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(14).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(9).getStringCellValue().equals("LBTS BL10 CND"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(10).getStringCellValue().equals("LBTS BL10 WCS"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(11).getStringCellValue().equals("LBTS BL10 SPY"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(12).getStringCellValue().equals("LBTS BL10 ADS"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(13).getStringCellValue().equals("LBTS BL10 ACTS"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(14).getStringCellValue().equals("LBTS BL10 ORTS"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(15).getStringCellValue().equals("CDLMS2"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(16).getStringCellValue().equals("MLST3 (CDLMS2)"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(17).getStringCellValue().equals(""));
