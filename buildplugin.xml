@@ -26,7 +26,7 @@
 	  <property name="debug"          value="on"/>
 	  <property name="optimize"       value="off"/>
 	  <property name="deprecation"    value="on"/>
-      <property name="target_vm"         value="1.6"/>
+      <property name="target_vm"         value="1.8"/>
 	  <property name="verbose"        value="no"/>
 	  <property name="packages"       value="org.*"/>
       <!-- The rapla-directories -->
