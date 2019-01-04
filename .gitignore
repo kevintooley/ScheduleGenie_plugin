@@ -25,3 +25,4 @@ bin/test.xconf
 bin/testdefault.xml
 rapla.iml
 *.iml
+/jarsigner.exe

@@ -437,6 +437,7 @@ public class SpreadsheetHandler {
 
             		// More than 1 RI identified
             		// Format the RI string with separating characters
+            		// FIXME: Account for "Jr."; either combine with last name or adjust logic below
             		for (int j = 0; j < splitStr.length; j++) {
             			if (j == 0) 
             				formatedRiString = formatedRiString + splitStr[j];
