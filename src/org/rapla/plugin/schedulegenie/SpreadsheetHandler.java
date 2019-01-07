@@ -62,8 +62,9 @@ public class SpreadsheetHandler {
 		// Create a Workbook for Lab schedules
         workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
         
-        final String userHome = System.getProperty("user.home");
-        String filePath = userHome + "\\Documents\\nscc_bulk_template.xls";
+        //final String userHome = System.getProperty("user.home");
+        //String filePath = userHome + "\\Documents\\ScheduleGenie_Zeta\\nscc_bulk_template.xls";
+        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "nscc_bulk_template.xls";
         System.out.println(filePath);
         
         // Create workbook for bulk upload

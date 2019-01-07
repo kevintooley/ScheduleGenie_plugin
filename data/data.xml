@@ -302,7 +302,7 @@
                <worktime>0-0</worktime>
                <exceptions-visible>false</exceptions-visible>
                <rows-per-hour>1</rows-per-hour>
-               <exclude-days></exclude-days>
+               <exclude-days/>
                <days-in-weekview>7</days-in-weekview>
                <first-day-of-week>2</first-day-of-week>
                <minimum-block-width>0</minimum-block-width>
@@ -5654,19 +5654,6 @@
          <rapla:appointment id="a67e23f8-c34a-4458-b899-ac0163245a26" start-date="2018-12-11" start-time="15:00:00" end-date="2018-12-11" end-time="18:00:00"/>
          <rapla:allocate idref="r9ebdf8b-a8bf-4d8b-a2a3-586ff35eb2c1"/>
          <rapla:allocate idref="r19c2251-2ea8-40a6-9894-dfb1fc811bc4"/>
-         <rapla:permission group="category[key='read-events-from-others']" access="read"/>
-      </rapla:reservation>
-      <rapla:reservation id="e8ee6ffa-991d-47cc-8870-f752fcc93e2a" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2015-05-21T00:00:00.0000Z" last-changed="2018-12-06T00:00:00.0000Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
-         <dynatt:defaultReservation>
-            <dynatt:name>C&amp;D - TPM Type Message Traffic throughput Measurements</dynatt:name>
-         </dynatt:defaultReservation>
-         <rapla:appointment id="a7a973c2-9683-44ad-8c6c-91437be35e50" start-date="2018-12-07" start-time="06:00:00" end-date="2018-12-07" end-time="15:00:00"/>
-         <rapla:allocate idref="r1b7556c-5f35-4d33-86cd-20d6c151b24e"/>
-         <rapla:allocate idref="rfe621e6-1cbf-48ba-9de9-fe90254d0526"/>
-         <rapla:allocate idref="rffc28e6-a1e5-4ed1-b553-e8243dad7867"/>
-         <rapla:allocate idref="r19c2251-2ea8-40a6-9894-dfb1fc811bc4"/>
-         <rapla:allocate idref="re0c99a4-473a-448f-a313-c84aaf7b4d58"/>
-         <rapla:allocate idref="r12b23b7-1f93-4938-a0b0-852cf79f5261"/>
          <rapla:permission group="category[key='read-events-from-others']" access="read"/>
       </rapla:reservation>
       <rapla:reservation id="e2966385-9d25-42b5-832d-c274bda62a3c" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2015-10-05T00:00:00.0000Z" last-changed="2018-12-10T00:00:00.0000Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
