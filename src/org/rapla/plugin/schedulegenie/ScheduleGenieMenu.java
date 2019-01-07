@@ -276,7 +276,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		final String scheduleName = "_NSCC_Test_Schedules";
 		final String bulkUploadName = "_NSCC_Bulk_Upload";
 		
-		// Get user home property; TODO: Find method to get MyDocuments directory
+		// Get user home property
 		final String userHome = System.getProperty("user.home");
 		
 		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";

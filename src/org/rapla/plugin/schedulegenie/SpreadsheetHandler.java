@@ -438,7 +438,8 @@ public class SpreadsheetHandler {
 
             		// More than 1 RI identified
             		// Format the RI string with separating characters
-            		// FIXME: Account for "Jr."; either combine with last name or adjust logic below
+            		// 
+            		// Note: If the TSSS requires a suffix (i.e. ", Jr.") for the last name, the algorithm below will need adjustments
             		for (int j = 0; j < splitStr.length; j++) {
             			if (j == 0) 
             				formatedRiString = formatedRiString + splitStr[j];
