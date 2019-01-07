@@ -526,7 +526,7 @@ public class SpreadsheetHandler {
 	
 	/**
 	 * Uses JFileChooser swing extension to open a dialog box.  Default location is set to 
-	 * <user_home>\Documents\ScheduleGenie_Zeta directory.
+	 * <user_home>\Documents\ScheduleGenie_Zeta\exports directory.
 	 * @param suggestedFileName
 	 * @return
 	 */
@@ -537,7 +537,7 @@ public class SpreadsheetHandler {
 		        "EXCEL Spreadsheets", "xlsx", "xls");
 		fileChooser.setFileFilter(filter);
 		fileChooser.setCurrentDirectory(new File
-				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Zeta"));
+				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Zeta" + System.getProperty("file.separator") + "exports"));
 		fileChooser.setSelectedFile(new File (suggestedFileName));
 		//if (fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
 		//if (fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {

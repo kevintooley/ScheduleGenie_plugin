@@ -279,8 +279,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Get user home property
 		final String userHome = System.getProperty("user.home");
 		
-		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
-		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 		
 		
 		sh.closeWorkbook(scheduleFilename, bulkFilename);
