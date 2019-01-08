@@ -1384,10 +1384,10 @@
          </dynatt:defaultPerson>
          <rapla:permission access="allocate_conflicts"/>
       </rapla:person>
-      <rapla:person id="r81f6784-fded-4416-a0a7-1b17230dced8" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2013-11-21T00:00:00.0000Z" last-changed="2018-12-17T15:01:52.0480Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
+      <rapla:person id="r81f6784-fded-4416-a0a7-1b17230dced8" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2013-11-21T00:00:00.0000Z" last-changed="2019-01-08T14:12:03.0149Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
          <dynatt:defaultPerson>
-            <dynatt:surname>Romvary</dynatt:surname>
-            <dynatt:forename>Chris</dynatt:forename>
+            <dynatt:surname>Romvary, Jr.</dynatt:surname>
+            <dynatt:forename>Christian</dynatt:forename>
             <dynatt:email>Christian.RomvaryJr@missionse.com</dynatt:email>
          </dynatt:defaultPerson>
          <rapla:permission access="allocate_conflicts"/>
@@ -4062,10 +4062,10 @@
          </dynatt:defaultPerson>
          <rapla:permission access="allocate_conflicts"/>
       </rapla:person>
-      <rapla:person id="r6f4fbfb-7968-4a9e-8f53-4f5f17f014ed" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2018-08-20T00:00:00.0000Z" last-changed="2018-12-17T15:01:17.0994Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
+      <rapla:person id="r6f4fbfb-7968-4a9e-8f53-4f5f17f014ed" owner="uf49044c-1469-4699-8a66-5f46ec6c0a41" created-at="2018-08-20T00:00:00.0000Z" last-changed="2019-01-08T14:12:27.0811Z" last-changed-by="uf49044c-1469-4699-8a66-5f46ec6c0a41">
          <dynatt:defaultPerson>
             <dynatt:surname>Boegly</dynatt:surname>
-            <dynatt:forename>Jerry</dynatt:forename>
+            <dynatt:forename>Leo (Jerry)</dynatt:forename>
             <dynatt:email></dynatt:email>
          </dynatt:defaultPerson>
          <rapla:permission access="allocate_conflicts"/>

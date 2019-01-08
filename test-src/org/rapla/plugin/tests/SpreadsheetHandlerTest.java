@@ -103,7 +103,7 @@ public class SpreadsheetHandlerTest {
 				  "0600", 
 				  "0900", 
 				  "BUILD: 30, CDLMS2, TE: Element, LBTS, ELEMENT: CND, CONFIG: BL9_DDG", 
-				  "Tooley, Kevin");
+				  "Romvary, Jr., Christian, Connelly, John");
 		
 		sh.populateBulkUpload("Shot_Template", 
 				  "SUITE_B", 
@@ -113,7 +113,7 @@ public class SpreadsheetHandlerTest {
 				  "0600", 
 				  "0900", 
 				  "BUILD: 30, LIVE CEC, UMG1, TE: Integration, SUITE_B, ELEMENT: MA, CONFIG: BMD51_DDG", 
-				  "Tooley, Kevin");
+				  "Connelly, John, Romvary, Jr., Christian");
 		
 		sh.populateBulkUpload("Shot_Template", 
 				  "AMOD1", 
@@ -123,7 +123,7 @@ public class SpreadsheetHandlerTest {
 				  "0600", 
 				  "0900", 
 				  "BUILD: 30, TE: SSIT, AMOD1, ELEMENT: WCS, CONFIG: BMD51_DDG", 
-				  "Tooley, Kevin");
+				  "Romvary, Sr., Christian");
 		
 		sh.populateBulkUpload("Shot_Template", 
 				  "TI16", 
@@ -133,7 +133,7 @@ public class SpreadsheetHandlerTest {
 				  "1200", 
 				  "1500", 
 				  "BUILD: 30, TE: SSIT, TI16, ELEMENT: WCS, CONFIG: BL9_DDG", 
-				  "Tooley, Kevin");
+				  "Boegly, Leo (Jerry), Tooley, Kevin");
 		
 		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/BU_file1.xlsx", 
 				"C:/Users/ktooley/Documents/TEST/BU_file2.xls");
@@ -160,7 +160,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(16).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(17).getStringCellValue().equals("LIVE CEC/WASP"));
 		
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(0).getStringCellValue().equals("Tooley, Kevin"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(0).getStringCellValue().equals("Romvary, Jr., Christian"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(1).getStringCellValue().equals("TEST SHOT 2"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(2).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(3).getStringCellValue().equals("USN-CSEA ACB16"));
@@ -179,7 +179,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(16).getStringCellValue().equals("MLST3 (CDLMS2)"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(17).getStringCellValue().equals(""));
 		
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(0).getStringCellValue().equals("Tooley, Kevin"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(0).getStringCellValue().equals("Connelly, John"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(1).getStringCellValue().equals("TEST SHOT 3"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(2).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(3).getStringCellValue().equals("BMD5.1"));
@@ -198,7 +198,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(16).getStringCellValue().equals("UMG-1 SUPPORT"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(17).getStringCellValue().equals("LIVE CEC/WASP"));
 
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(0).getStringCellValue().equals("Tooley, Kevin"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(0).getStringCellValue().equals("Romvary, Sr., Christian"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(1).getStringCellValue().equals("TEST SHOT 4"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(2).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(3).getStringCellValue().equals("BMD5.1"));
@@ -217,7 +217,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(16).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(17).getStringCellValue().equals(""));
 		
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(0).getStringCellValue().equals("Tooley, Kevin"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(0).getStringCellValue().equals("Boegly, Leo (Jerry)"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(1).getStringCellValue().equals("TEST SHOT 5"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(2).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(3).getStringCellValue().equals("USN-CSEA ACB16"));

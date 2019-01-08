@@ -593,17 +593,16 @@ public class SpreadsheetHandler {
             switch(i) {
             
             case 0:
-            	/*
+            	
             	// Split the RI input to evaluate for multiple RI's
             	String[] splitStr = ri.split(",");
             	
-            	if (ri.contains("Jr."))
-            		cell.setCellValue(splitStr[0] + ", " + splitStr[1] + ", " + splitStr[2]);
-            	else
-            		cell.setCellValue(splitStr[0] + ", " + splitStr[1]);
-            		*/
-            	//cell.setCellValue(ri);
-            	cellValue = ri;
+            	//This handles the case if there is a suffix in the name (i.e. Jr., Sr., etc)
+            	if (splitStr[1].contains("Jr.") || splitStr[1].contains("Sr.")) 
+            		cellValue = splitStr[0] + "," + splitStr[1] + "," + splitStr[2];
+            	else 
+            		cellValue = splitStr[0] + "," + splitStr[1];
+            	
             	break;
             	
             case 1:
