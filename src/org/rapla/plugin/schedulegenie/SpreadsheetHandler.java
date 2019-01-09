@@ -430,36 +430,9 @@ public class SpreadsheetHandler {
             	
             	cell.setCellStyle(newRowCellStyle);
             	
-            	// Split the RI input to evaluate for multiple RI's
-            	String[] splitStr = ri.split(",");
-            	
-            	String formatedRiString = "";
-            	if (splitStr.length > 2) { 
-
-            		// More than 1 RI identified
-            		// Format the RI string with separating characters
-            		// 
-            		// Note: If the TSSS requires a suffix (i.e. ", Jr.") for the last name, the algorithm below will need adjustments
-            		for (int j = 0; j < splitStr.length; j++) {
-            			if (j == 0) 
-            				formatedRiString = formatedRiString + splitStr[j];
-            			else if (j % 2 == 0) 
-            				formatedRiString = formatedRiString + " | " + splitStr[j];
-            			else
-            				formatedRiString = formatedRiString + ", " + splitStr[j];
-            		}
-            		
-            		cell.setCellValue(formatedRiString);
-            		
-            		sheet.autoSizeColumn(i);
-            		
-            	}
-            	else {
-            		cell.setCellValue(ri);
-            	}
-            	
-
-            	
+	            cell.setCellValue(getShotRiString(ri));
+	            		
+	            sheet.autoSizeColumn(i);
             	
             	break;
             	
@@ -755,6 +728,111 @@ public class SpreadsheetHandler {
         	
         }
 		
+	}
+	
+	/**
+	 * Called from case 10 of the addShotToSchedule method.  This returns a formated string of the shot owners
+	 * @param ri string from rapla ri field
+	 * @return string (formatted)
+	 */
+	public String getShotRiString(String ri) {
+		
+		String formatedString = "";
+		
+		// Split the input ri string into an array and strip the whitespace
+		String[] splitStr = ri.replace(" ", "").split(",");
+		
+		final int arrayLength = splitStr.length;
+		int suffixCount = 0, fromIndex = 0;
+        
+		// Count the number of times a name suffix (i.e. "Jr.") is in the ri string
+        while ((fromIndex = ri.indexOf(".", fromIndex)) != -1 ){
+            suffixCount++;
+            fromIndex++;
+        }
+		
+        /* 
+         * Switch statement based on the array length.  
+         * Based on the constraints that there will alway be a first and last name for each person (Rapla Requirement), the
+         * following algorithms format the string in a "First Last, Suffix" syntax with a " | " separator. 
+         * 
+         * Here is an example of the logic table used to evaluate the algorithm logic for an arrayLength of 7:
+         * 
+         * "L" = last name
+         * "F" = first name
+         * "x" = a suffix like Jr.
+         * 
+         * 0 | 1 | 2 | 3 | 4 | 5 | 6 
+         * L   x   F   L   F   L   F
+         * L   F   L   x   F   L   F
+         * L   F   L   F   L   x   F
+         * 
+         * No other possibilities exist with given constraints.
+         * 
+         * Array length of 9 through 12 will warn the operator to use less shot RI's
+         * 
+         * Any other array lengths warn the operator to check the RI fields.
+        */
+		switch (arrayLength) {
+		
+		case 2:
+			formatedString = splitStr[1] + " " + splitStr[0];
+			break;
+			
+		case 3:
+			formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1];
+			break;
+			
+		case 4:
+			formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[3] + " " + splitStr[2];
+			break;
+			
+		case 5:
+			if (splitStr[1].equals("Jr.") || splitStr[1].equals("Sr."))
+				formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1] + " | " + splitStr[4] + " " + splitStr[3];
+			else
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[4] + " " + splitStr[2] + ", " + splitStr[3];
+			break;
+			
+		case 6:
+			if (suffixCount == 0)
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[3] + " " + splitStr[2] + " | " + splitStr[5] + " " + splitStr[4];
+			else
+				formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1] + " | " + splitStr[5] + " " + splitStr[3] + ", " + splitStr[4];
+			break;
+			
+		case 7:
+			if (splitStr[1].equals("Jr.") || splitStr[1].equals("Sr."))
+				formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1] + " | " + splitStr[4] + " " + splitStr[3] + " | " + splitStr[6] + " " + splitStr[5];
+			else if (splitStr[3].equals("Jr.") || splitStr[3].equals("Sr."))
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[4] + " " + splitStr[2] + ", " + splitStr[3] + " | " + splitStr[6] + " " + splitStr[5];
+			else if (splitStr[5].equals("Jr.") || splitStr[5].equals("Sr."))
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[3] + " " + splitStr[2] + " | " + splitStr[6] + " " + splitStr[4] + ", " + splitStr[5];
+			break;
+			
+		case 8:
+			if (suffixCount == 0)
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[3] + " " + splitStr[2] + " | " + splitStr[5] + " " + splitStr[4] + " | " + splitStr[7] + " " + splitStr[6];
+			else if (splitStr[1].equals("Jr.") || splitStr[1].equals("Sr."))
+				if (splitStr[4].equals("Jr.") || splitStr[4].equals("Sr."))
+					formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1] + " | " + splitStr[5] + " " + splitStr[3] + ", " + splitStr[4] + " | " + splitStr[7] + " " + splitStr[6];
+				else
+					formatedString = splitStr[2] + " " + splitStr[0] + ", " + splitStr[1] + " | " + splitStr[4] + " " + splitStr[3] + " | " + splitStr[7] + " " + splitStr[5] + ", " + splitStr[6];
+			else
+				formatedString = splitStr[1] + " " + splitStr[0] + " | " + splitStr[4] + " " + splitStr[2] + ", " + splitStr[3] + " | " + splitStr[7] + " " + splitStr[5] + ", " + splitStr[6];
+			break;
+		case 9:
+		case 10:
+		case 11:
+		case 12:
+			formatedString = "NAME ERROR: EXCEEDED THE NUMBER OF SHOT OWNERS";
+			break;
+		default:
+			formatedString = "NAME ERROR: CHECK INPUTS";
+		
+		}
+		
+		return formatedString;
 	}
 
 }

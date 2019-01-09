@@ -30,7 +30,7 @@ public class SpreadsheetHandlerTest {
 		
 		sh.createScheduleSheet("AMOD1", "12/10", "12/16");
 		sh.createDateRow("AMOD1", 3, "Monday", "12/3/2018");
-		sh.addShotToSchedule("AMOD1", 4, "Load & Cycle", "0600", "0900", "CDLMS1", "Kevin");
+		sh.addShotToSchedule("AMOD1", 4, "Load & Cycle", "0600", "0900", "CDLMS1", "Tooley, Kevin");
 		
 		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/poi-generated-file.xlsx", "C:/Users/ktooley/Documents/TEST/poi-generated-file1.xlsx");
 		
@@ -45,7 +45,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(7) == 1700);
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(8) == 1700);
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(9) == 1700);
-		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(10) == 6000);
+		//assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(10) == 6000);
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(11) == 4800);
 		
 		assertTrue(sh.workbook.getSheet("AMOD1").getNumMergedRegions() == 2);
@@ -240,14 +240,83 @@ public class SpreadsheetHandlerTest {
 		
 	}
 	
-	/*@Test
-	public void testChooseWorkbook() throws FileNotFoundException, IOException {
+	@Test
+	public void testGetShotRiString() throws FileNotFoundException, IOException {
 		
-		SpreadsheetHandler sh = new SpreadsheetHandler(false);
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
 		
-		// operator must choose the file below to pass
-		assertTrue(sh.chooseFile("TEST_FILE.xlsx").equals("C:\\Users\\ktooley\\Documents\\nscc_bulk_template.xls"));
+		//Size 2
+		String ri1 = "Tooley, Kevin";
+		String test1 = sh.getShotRiString(ri1);
+		assertTrue(test1.equals("Kevin Tooley"));
 		
-	}*/
+		//Size 3
+		String ri2 = "Tooley, Jr., Kevin";
+		String test2 = sh.getShotRiString(ri2);
+		assertTrue(test2.equals("Kevin Tooley, Jr."));
+		
+		//Size 4
+		String ri3 = "Tooley, Kevin, Connelly, John";
+		String test3 = sh.getShotRiString(ri3);
+		assertTrue(test3.equals("Kevin Tooley | John Connelly"));
+		
+		//Size 5 (Last, Jr., First | Last, First) or (Last, First | Last, Jr., First)
+		String ri4 = "Tooley, Jr., Kevin, Connelly, John";
+		String test4 = sh.getShotRiString(ri4);
+		assertTrue(test4.equals("Kevin Tooley, Jr. | John Connelly"));
+		
+		String ri5 = "Tooley, Kevin, Connelly, Jr., John";
+		String test5 = sh.getShotRiString(ri5);
+		assertTrue(test5.equals("Kevin Tooley | John Connelly, Jr."));
+		
+		//Size 6 (i.e. two Jr's, or 3 regular RI's)
+		String ri6 = "Tooley, Kevin, Connelly, John, Donow, Matthew";
+		String test6 = sh.getShotRiString(ri6);
+		assertTrue(test6.equals("Kevin Tooley | John Connelly | Matthew Donow"));
+		
+		String ri7 = "Tooley, Sr., Kevin, Connelly, Jr., John";
+		String test7 = sh.getShotRiString(ri7);
+		assertTrue(test7.equals("Kevin Tooley, Sr. | John Connelly, Jr."));
+		
+		//Size 7 (i.e. one Jr, or 2 regular RI's)
+		String ri8 = "Tooley, Jr., Kevin, Connelly, John, Donow, Matthew";
+		String test8 = sh.getShotRiString(ri8);
+		assertTrue(test8.equals("Kevin Tooley, Jr. | John Connelly | Matthew Donow"));
+		
+		String ri9 = "Tooley, Kevin, Connelly, Sr., John, Donow, Matthew";
+		String test9 = sh.getShotRiString(ri9);
+		assertTrue(test9.equals("Kevin Tooley | John Connelly, Sr. | Matthew Donow"));
+		
+		String ri10 = "Tooley, Kevin, Connelly, John, Donow, Jr., Matthew";
+		String test10 = sh.getShotRiString(ri10);
+		assertTrue(test10.equals("Kevin Tooley | John Connelly | Matthew Donow, Jr."));
+		
+		//Size 8 (i.e. two Jr, or 1 regular RI, or no Jr's at all)
+		String ri11 = "Tooley, Kevin, Connelly, John, Donow, Matthew, Frank, Dave";
+		String test11 = sh.getShotRiString(ri11);
+		assertTrue(test11.equals("Kevin Tooley | John Connelly | Matthew Donow | Dave Frank"));
+		
+		String ri12 = "Tooley, Jr., Kevin, Connelly, Sr., John, Donow, Matthew";
+		String test12 = sh.getShotRiString(ri12);
+		assertTrue(test12.equals("Kevin Tooley, Jr. | John Connelly, Sr. | Matthew Donow"));
+		
+		String ri13 = "Tooley, Jr., Kevin, Connelly, John, Donow, Sr., Matthew";
+		String test13 = sh.getShotRiString(ri13);
+		assertTrue(test13.equals("Kevin Tooley, Jr. | John Connelly | Matthew Donow, Sr."));
+		
+		String ri14 = "Tooley, Kevin, Connelly, Jr., John, Donow, Sr., Matthew";
+		String test14 = sh.getShotRiString(ri14);
+		assertTrue(test14.equals("Kevin Tooley | John Connelly, Jr. | Matthew Donow, Sr."));
+		
+		//ERRORS
+		String ri15 = "Tooley, Kevin, Connelly, John, Donow, Matthew, Frank, Dave, Tooley, Kevin, Connelly, John";
+		String test15 = sh.getShotRiString(ri15);
+		assertTrue(test15.equals("NAME ERROR: EXCEEDED THE NUMBER OF SHOT OWNERS"));
+		
+		String ri16 = "Tooley";
+		String test16 = sh.getShotRiString(ri16);
+		assertTrue(test16.equals("NAME ERROR: CHECK INPUTS"));
+		
+	}
 
 }
