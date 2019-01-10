@@ -114,7 +114,7 @@ public class SwingWeekCalendar extends AbstractRaplaSwingCalendar
         if ( rowsPerHour == 1 ) {
             if ( hours < 10)
             {
-                view.setRowSize( 80);
+                view.setRowSize( 40);
             }
             else if ( hours < 15)
             {
