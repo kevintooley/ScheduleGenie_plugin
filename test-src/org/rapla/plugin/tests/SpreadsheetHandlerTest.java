@@ -147,8 +147,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(3).getStringCellValue().equals("USN-CSEA ACB20"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(4).getStringCellValue().equals("Element"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(5).getStringCellValue().equals("OASIS"));
-		//assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(6).getCellStyle().equals(arg0))
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(6).getStringCellValue().equals("12/19/2018"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(6).toString().equals("19-Dec-2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(9).getStringCellValue().equals("NSCC BL10 CND"));
@@ -167,7 +166,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(3).getStringCellValue().equals("USN-CSEA ACB16"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(4).getStringCellValue().equals("Element"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(5).getStringCellValue().equals("CND"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(6).getStringCellValue().equals("12/19/2018"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(6).toString().equals("19-Dec-2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(9).getStringCellValue().equals("LBTS BL10 CND"));
@@ -186,7 +185,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(3).getStringCellValue().equals("BMD5.1"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(4).getStringCellValue().equals("Integration"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(5).getStringCellValue().equals("MA"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(6).getStringCellValue().equals("12/19/2018"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(6).toString().equals("19-Dec-2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(9).getStringCellValue().equals("SUITE B"));
@@ -205,7 +204,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(3).getStringCellValue().equals("BMD5.1"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(4).getStringCellValue().equals("SSIT"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(5).getStringCellValue().equals("WCS"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(6).getStringCellValue().equals("12/19/2018"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(6).toString().equals("19-Dec-2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(9).getStringCellValue().equals("AMOD NSCC TI12 SUITE 1 CND"));
@@ -224,7 +223,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(3).getStringCellValue().equals("USN-CSEA ACB16"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(4).getStringCellValue().equals("SSIT"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(5).getStringCellValue().equals("WCS"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(6).getStringCellValue().equals("12/19/2018"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(6).toString().equals("19-Dec-2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(7).getNumericCellValue() == 1200);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(8).getNumericCellValue() == 1500);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(5).getCell(9).getStringCellValue().equals("NSCC TI16 CND"));

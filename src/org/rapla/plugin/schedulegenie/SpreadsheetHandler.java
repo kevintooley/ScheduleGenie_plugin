@@ -2,6 +2,7 @@ package org.rapla.plugin.schedulegenie;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -733,24 +734,26 @@ public class SpreadsheetHandler {
             if (i == 7 || i == 8)
             	cell.setCellValue(Integer.parseInt(cellValue));
             else if (i == 6) {
-            	//XSSFCellStyle dateRowCellStyle = workbook.createCellStyle();
-            	HSSFCellStyle dateCellStyle = bulkUpload.createCellStyle();
-            	short df = bulkUpload.createDataFormat().getFormat("MM/dd/yyyy");
-            	dateCellStyle.setDataFormat(df);
-            	cell.setCellStyle(dateCellStyle);
-            	//cell.setCellType(Cell.CELL_TYPE_NUMERIC);
-            	//cell.setCellStyle()
             	
-            	/*SimpleDateFormat datetemp = new SimpleDateFormat("MM/d/yyyy");
-            	java.util.Date cellDateValue = null;
-				try {
-					cellDateValue = datetemp.parse(date);
+            	// Added the following to format the bulk upload spreadsheet "Date" field
+            	// An exception was thrown every time the operator attempted to upload the spreadsheet
+            	// Exception called out a type mismatch
+            	// Investigation revealed that the field switched to a CellType.STRING.  The following was added
+            	// to force the cell to maintain CellType.NUMERIC with a "Date" format
+            	java.util.Date datetemp = null;
+            	SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
+            	try {
+					datetemp = format.parse(cellValue);
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-            	//cellValue = */
-            	cell.setCellValue(cellValue);
+            	
+            	cell.setCellType(CellType.NUMERIC);
+            	HSSFCellStyle style = bulkUpload.createCellStyle();
+            	style.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy"));
+            	cell.setCellValue(datetemp);
+            	cell.setCellStyle(style);
             }
             else
             	cell.setCellValue(cellValue);
