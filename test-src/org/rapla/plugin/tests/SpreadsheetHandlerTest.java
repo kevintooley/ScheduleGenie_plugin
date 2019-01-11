@@ -147,6 +147,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(3).getStringCellValue().equals("USN-CSEA ACB20"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(4).getStringCellValue().equals("Element"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(5).getStringCellValue().equals("OASIS"));
+		//assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(6).getCellStyle().equals(arg0))
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(6).getStringCellValue().equals("12/19/2018"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(7).getNumericCellValue() == 600);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(8).getNumericCellValue() == 900);

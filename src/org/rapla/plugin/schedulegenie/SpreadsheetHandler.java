@@ -1,6 +1,7 @@
 package org.rapla.plugin.schedulegenie;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,8 +17,12 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import net.fortuna.ical4j.model.Date;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 import javax.swing.JFileChooser;
@@ -628,6 +633,10 @@ public class SpreadsheetHandler {
             	break;
             case 6:
 
+            	//SimpleDateFormat datetemp = new SimpleDateFormat("MM/d/yyyy");
+            	//Date cellDateValue = datetemp.parse(date);
+            	//cellValue = 
+            	
             	cellValue = date;
             	break;
             	
@@ -723,6 +732,26 @@ public class SpreadsheetHandler {
             // If if statement added to format the output properly for the start and end time
             if (i == 7 || i == 8)
             	cell.setCellValue(Integer.parseInt(cellValue));
+            else if (i == 6) {
+            	//XSSFCellStyle dateRowCellStyle = workbook.createCellStyle();
+            	HSSFCellStyle dateCellStyle = bulkUpload.createCellStyle();
+            	short df = bulkUpload.createDataFormat().getFormat("MM/dd/yyyy");
+            	dateCellStyle.setDataFormat(df);
+            	cell.setCellStyle(dateCellStyle);
+            	//cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            	//cell.setCellStyle()
+            	
+            	/*SimpleDateFormat datetemp = new SimpleDateFormat("MM/d/yyyy");
+            	java.util.Date cellDateValue = null;
+				try {
+					cellDateValue = datetemp.parse(date);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	//cellValue = */
+            	cell.setCellValue(cellValue);
+            }
             else
             	cell.setCellValue(cellValue);
         	
