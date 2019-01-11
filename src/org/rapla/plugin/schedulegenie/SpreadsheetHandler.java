@@ -18,8 +18,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import net.fortuna.ical4j.model.Date;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
