@@ -110,7 +110,7 @@ public class SpreadsheetHandlerTest {
 				  3, 
 				  "TEST SHOT 3", 
 				  "12/19/2018", 
-				  "0600", 
+				  "0000", 
 				  "0900", 
 				  "BUILD: 30, LIVE CEC, UMG1, TE: Integration, SUITE_B, ELEMENT: MA, CONFIG: BMD51_DDG", 
 				  "Connelly, John, Romvary, Jr., Christian");
@@ -120,8 +120,8 @@ public class SpreadsheetHandlerTest {
 				  4, 
 				  "TEST SHOT 4", 
 				  "12/19/2018", 
-				  "0600", 
-				  "0900", 
+				  "2100", 
+				  "2400", 
 				  "BUILD: 30, TE: SSIT, AMOD1, ELEMENT: WCS, CONFIG: BMD51_DDG", 
 				  "Romvary, Sr., Christian");
 		
@@ -186,7 +186,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(4).getStringCellValue().equals("Integration"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(5).getStringCellValue().equals("MA"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(6).toString().equals("19-Dec-2018"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(7).getNumericCellValue() == 600);
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(7).getNumericCellValue() == 0);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(8).getNumericCellValue() == 900);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(9).getStringCellValue().equals("SUITE B"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(10).getStringCellValue().equals(""));
@@ -205,8 +205,8 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(4).getStringCellValue().equals("SSIT"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(5).getStringCellValue().equals("WCS"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(6).toString().equals("19-Dec-2018"));
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(7).getNumericCellValue() == 600);
-		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(8).getNumericCellValue() == 900);
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(7).getNumericCellValue() == 2100);
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(8).getNumericCellValue() == 2400);
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(9).getStringCellValue().equals("AMOD NSCC TI12 SUITE 1 CND"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(10).getStringCellValue().equals("AMOD NSCC TI12 SUITE 1 WCS"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(4).getCell(11).getStringCellValue().equals("AMOD NSCC TI12 SUITE 1 SPY"));

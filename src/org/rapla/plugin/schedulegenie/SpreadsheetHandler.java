@@ -347,7 +347,10 @@ public class SpreadsheetHandler {
             case 1:
             	
             	cell.setCellStyle(newRowTimeCellStyle);
-            	cell.setCellValue(Integer.parseInt(endTime));
+            	if (Integer.parseInt(endTime) == 0) 
+            		cell.setCellValue(Integer.parseInt("2400"));
+            	else 
+            		cell.setCellValue(Integer.parseInt(endTime));
             	break;
             	
             case 2:
@@ -646,7 +649,10 @@ public class SpreadsheetHandler {
             	
             case 8:
 
-            	cellValue = endTime;
+            	if (Integer.parseInt(endTime) == 0) 
+            		cellValue = "2400";
+            	else 
+            		cellValue = endTime;
             	break;
             	 	
             case 9:
@@ -743,7 +749,6 @@ public class SpreadsheetHandler {
             	try {
 					datetemp = format.parse(cellValue);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             	
