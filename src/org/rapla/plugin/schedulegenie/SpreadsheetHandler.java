@@ -73,6 +73,10 @@ public class SpreadsheetHandler {
         
         // Create workbook for bulk upload
         bulkUpload = new HSSFWorkbook(new FileInputStream(filePath));
+        
+        // FOR TESTING ONLY;  Comment these in and the line above out to use a new file vice the template
+        //bulkUpload = new HSSFWorkbook();
+        //bulkUpload.createSheet("Shot_Template");
 	}
 	
 	/**
@@ -550,10 +554,12 @@ public class SpreadsheetHandler {
 		final LinkedList<LabMapping> LAB_MAPS = labConfig.getMapping();
 		final LinkedList<ConfigMapping> CONFIG_MAPS = labConfig.getConfigMapping();
 		
+		// FOR TESTING ONLY; Uncomment the line below and comment out the declaration below that; this will use a new file vice the template
+        //HSSFSheet bulkUploadSheet = bulkUpload.getSheet("Shot_Template");
+		
 		// Add row to sheet
 		HSSFSheet bulkUploadSheet = bulkUpload.getSheet(sheetName);
-        //XSSFRow newRow = sheet.createRow(rowNumber);
-        //HSSFRow newRow = bulkUploadSheet.getRow(rowNumber);  //.createRow(rowNumber);
+        
         HSSFRow newRow = bulkUploadSheet.createRow(rowNumber);
         
         // Split the resources for each shot into an array
@@ -599,6 +605,7 @@ public class SpreadsheetHandler {
             	 * Search the CONFIG_MAP to find the appropriate mapping for the TSSS
             	 */
             	for (String res : resourceArray) {
+            		// TODO: Evaluate if case 5-like algorithm needed here
             		if (res.contains("CONFIG:")) {
             			String tmp = res.replaceAll("\\s", "");
             			String config = tmp.replace("CONFIG:", "");
@@ -613,6 +620,7 @@ public class SpreadsheetHandler {
             	break;
             case 4:
             	for (String res : resourceArray) {
+            		// TODO: Evaluate if case 5-like algorithm needed here
             		if (res.contains("TE:")) {
             			String tmp = res.replaceAll("\\s", "");
             			cellValue = tmp.replace("TE:", "");
@@ -623,8 +631,16 @@ public class SpreadsheetHandler {
             	
             case 5:
             	for (String res : resourceArray) {
-            		if (res.contains("ELEMENT:")) {
-            			String tmp = res.replaceAll("\\s", "");
+            		if (res.contains(" ELEMENT:")) {
+            			//String tmp = res.replaceAll("\\s", "");
+            			//cellValue = tmp.replace("ELEMENT:", "");
+            			String tmp = res.replaceFirst("\\s", "");
+            			tmp = tmp.replaceFirst("\\s", "");
+            			cellValue = tmp.replace("ELEMENT:", "");
+            			break;
+            		}
+            		else if (res.contains("ELEMENT:")) {
+            			String tmp = res.replaceFirst("\\s", "");
             			cellValue = tmp.replace("ELEMENT:", "");
             			break;
             		}
@@ -733,17 +749,24 @@ public class SpreadsheetHandler {
             	cell.setCellValue(Integer.parseInt(cellValue));
             else if (i == 6) {
             	
-            	// Added the following to format the bulk upload spreadsheet "Date" field
-            	// An exception was thrown every time the operator attempted to upload the spreadsheet
-            	// Exception called out a type mismatch
+            	// Added the following to format the bulk upload spreadsheet "Date" field.
+            	// An exception was thrown every time the operator attempted to upload the spreadsheet.
+            	// Exception called out a type mismatch.
             	// Investigation revealed that the field switched to a CellType.STRING.  The following was added
             	// to force the cell to maintain CellType.NUMERIC with a "Date" format
+            	
+            	/*
+            	 * NOTE:  After line 35 of the bulk spreadsheet, all dates show as a numeric value vice a date format.  
+            	 * Troubleshooting revealed that this is a template issue.  By removing the template and added entries to a
+            	 * raw xls file, the date format was visually valid.  Please note that this error is not causing any problems
+            	 * on the TSSS at this time.  It is simply a visual nuisance.  
+            	 */
             	java.util.Date datetemp = null;
             	SimpleDateFormat format = new SimpleDateFormat("M/d/yy");
             	try {
 					datetemp = format.parse(cellValue);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
+					// Auto-generated catch block
 					e.printStackTrace();
 				}
             	
