@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
@@ -153,8 +154,10 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			String name = lab.getName(getLocale());
 			labList.add(name);
 			
-			System.out.println("Searching for " + name + " shots...");
-			
+			/*
+			 * Search for shots in each lab
+			 */
+			// System.out.println("Searching for " + name + " shots...");
 			ArrayList<Object> appointmentObjects = new ArrayList<Object>();
 			
 			for (Object app : myObjects) {
@@ -207,6 +210,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			
 			for (Object appointment : room.shots) {
 				
+				// FIXME: Shots that start at midnight on Monday are not being processed
+				
 				ArrayList<String> rowFields = new ArrayList<String>();
 				
 				SimpleDateFormat format = new SimpleDateFormat("HHmm");
@@ -232,15 +237,26 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 							 * otherwise, increment to the next day
 							 */
 							String tempDate = formatLongDate( (java.util.Date)value );
-							if ( !tempDate.equals(stringDay) ) {
+							if ( !tempDate.equals(stringDay) && column.getColumnName().equals("Start")) {
 								incrementDay = true;
-								scheduleDay = (java.util.Date)value;
+								
+								/* 
+								 * 3/11/2019: Fixed bug that prevented date from rolling to next day.
+								 * Issue is with local time zone.  By passing the date "value" to the getDate 
+								 * method as a "startTime" (see method arguments) the return is a valid
+								 */
+								scheduleDay = getDate( (java.util.Date)value, true);
 								stringDay = tempDate;
 							}
 							
 							// Get and store the timestamp within the "value" Date object
 							String timestamp = format.format(   (java.util.Date)value);
 							formated = timestamp;
+							
+							// 3/11/2019: Fix bug that shows shot ending at midnight as timestamp of 0000 instead of 2400
+							if ( formated.equals("0000") && column.getColumnName().equals("End") ) {
+								formated = "2400";
+							}
 						}
 						else
 						{
@@ -250,10 +266,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		    		}
 		    		
 					rowFields.add(formated);
-					//System.out.println("value " + formated + " moved to list");
 					
 				}
-				//System.out.println("<<<END SHOT DATA>>>");
 				
 				if (incrementDay) {
 					sh.createDateRow(room.name, i, getDayOfWeek(scheduleDay), stringDay);
@@ -266,7 +280,6 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 				i++;
 				j++;
 			}
-			//System.out.println("");
 			
 		}
 		
@@ -370,6 +383,10 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	
 	private String formatLongDate (Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		
+		// 3/11/2019: Fixed shots that start at midnight were not scheduled on the correct day
+		format.setTimeZone( getRaplaLocale().getTimeZone());
+		
 		return format.format(date);
 	}
 
