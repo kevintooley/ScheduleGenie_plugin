@@ -120,19 +120,19 @@ public class SpreadsheetHandler {
 
         // Create Row A, merge, adjust column widths
         XSSFRow headerRowA = sheet.createRow(0);
-        sheet.addMergedRegion(new CellRangeAddress(0,0,0,11));
+        sheet.addMergedRegion(new CellRangeAddress(0,0,0,12));
         sheet.setColumnWidth(0, 2600);
         sheet.setColumnWidth(1, 2150);
         sheet.setColumnWidth(2, 11300);
         sheet.setColumnWidth(3, 2400);
-        for (int i = 4; i < 10; i++)
+        for (int i = 4; i < 11; i++)
         	sheet.setColumnWidth(i, 1700);
-        sheet.setColumnWidth(10, 6000);
-        sheet.setColumnWidth(11, 4800);
+        sheet.setColumnWidth(11, 6000);
+        sheet.setColumnWidth(12, 4800);
         
         
         // Create cells for Row A
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 13; i++) {
             XSSFCell cell = headerRowA.createCell(i);
             cell.setCellStyle(headerRowACellStyle);
             if (i == 0)
@@ -161,10 +161,10 @@ public class SpreadsheetHandler {
         
         // Create Row B, merge
         XSSFRow headerRowB = sheet.createRow(1);
-        sheet.addMergedRegion(new CellRangeAddress(1,1,3,9));
+        sheet.addMergedRegion(new CellRangeAddress(1,1,3,10));
         
         // Create cells for Row B
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 13; i++) {
             XSSFCell cell = headerRowB.createCell(i);
             cell.setCellStyle(headerRowBCellStyle);
         }
@@ -193,7 +193,7 @@ public class SpreadsheetHandler {
         XSSFRow headerRowC = sheet.createRow(2);
         
         // Create cells for Row C
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 13; i++) {
             XSSFCell cell = headerRowC.createCell(i);
             cell.setCellStyle(headerRowCCellStyle);
             switch(i) {
@@ -228,9 +228,12 @@ public class SpreadsheetHandler {
             	cell.setCellValue("JMCIS");
             	break;
             case 10:
-            	cell.setCellValue("Responsible Individual(s)");
+            	cell.setCellValue("MMSP");
             	break;
             case 11:
+            	cell.setCellValue("Responsible Individual(s)");
+            	break;
+            case 12:
             	cell.setCellValue("Support");
             	break;
             }
@@ -268,7 +271,7 @@ public class SpreadsheetHandler {
         XSSFRow dateRow = sheet.createRow(rowNumber);
         
         // Create cells for Row B
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 13; i++) {
             XSSFCell cell = dateRow.createCell(i);
             cell.setCellStyle(dateRowCellStyle);
             switch(i) {
@@ -337,7 +340,7 @@ public class SpreadsheetHandler {
         String[] resourceArray = resources.split(",");
         
         // Create the cells for the new row
-        for(int i = 0; i < 12; i++) {
+        for(int i = 0; i < 13; i++) {
         	
             XSSFCell cell = newRow.createCell(i);
             
@@ -440,6 +443,15 @@ public class SpreadsheetHandler {
             case 10:
             	
             	cell.setCellStyle(newRowCellStyle);
+            	if (resources.contains("MMSP"))
+            		cell.setCellValue("X");
+            	
+            	break;
+            	
+            	
+            case 11:
+            	
+            	cell.setCellStyle(newRowCellStyle);
             	
 	            cell.setCellValue(getShotRiString(ri));
 	            		
@@ -447,7 +459,7 @@ public class SpreadsheetHandler {
             	
             	break;
             	
-            case 11:
+            case 12:
             	
             	cell.setCellStyle(newRowCellStyle);
             	if (resources.contains("CDLMS") || resources.contains("UMG"))
@@ -569,7 +581,7 @@ public class SpreadsheetHandler {
         String[] resourceArray = resources.split(",");
         
         // Create the cells for the new row
-        for(int i = 0; i < 18; i++) {
+        for(int i = 0; i < 19; i++) {
         	
         	//HSSFCell cell = newRow.getCell(i);
         	HSSFCell cell = newRow.createCell(i);
@@ -743,6 +755,15 @@ public class SpreadsheetHandler {
             	for (String res : resourceArray) {
             		if (res.contains("LIVE CEC")) {
             			cellValue = "LIVE CEC/WASP";
+            			break;
+            		}
+            	}
+            	break;
+            	
+            case 18:
+            	for (String res : resourceArray) {
+            		if (res.contains("MMSP")) {
+            			cellValue = "LIVE MMSP";
             			break;
             		}
             	}

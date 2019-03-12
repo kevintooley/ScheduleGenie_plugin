@@ -63,8 +63,9 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(7) == 1700);
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(8) == 1700);
 		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(9) == 1700);
+		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(10) == 1700);
 		//assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(10) == 6000);
-		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(11) == 4800);
+		assertTrue(sh.workbook.getSheet("AMOD1").getColumnWidth(12) == 4800);
 		
 		assertTrue(sh.workbook.getSheet("AMOD1").getNumMergedRegions() == 2);
 		assertTrue(sh.workbook.getSheet("AMOD1").getRow(0).getCell(0).getCellStyle().getFont().getFontHeightInPoints() == 10);
@@ -80,8 +81,9 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(7).getStringCellValue().equals("UMG2"));
 		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(8).getStringCellValue().equals("CEC"));
 		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(9).getStringCellValue().equals("JMCIS"));
-		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(10).getStringCellValue().equals("Responsible Individual(s)"));
-		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(11).getStringCellValue().equals("Support"));
+		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(10).getStringCellValue().equals("MMSP"));
+		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(11).getStringCellValue().equals("Responsible Individual(s)"));
+		assertTrue(sh.workbook.getSheet("AMOD1").getRow(2).getCell(12).getStringCellValue().equals("Support"));
 		
 		
 		// TODO:  Add test to check names of sheets
@@ -120,7 +122,7 @@ public class SpreadsheetHandlerTest {
 				  "12/19/2018", 
 				  "0600", 
 				  "0900", 
-				  "BUILD: 30, CDLMS2, TE: Element, LBTS, ELEMENT: CND, CONFIG: BL9_DDG", 
+				  "BUILD: 30, CDLMS2, TE: Element, LBTS, ELEMENT: CND, CONFIG: BL9_DDG, LIVE MMSP", 
 				  "Romvary, Jr., Christian, Connelly, John");
 		
 		sh.populateBulkUpload("Shot_Template", 
@@ -177,6 +179,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(15).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(16).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(17).getStringCellValue().equals("LIVE CEC/WASP"));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(1).getCell(18).getStringCellValue().equals(""));
 		
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(0).getStringCellValue().equals("Romvary, Jr., Christian"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(1).getStringCellValue().equals("TEST SHOT 2"));
@@ -196,6 +199,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(15).getStringCellValue().equals("CDLMS2"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(16).getStringCellValue().equals("MLST3 (CDLMS2)"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(17).getStringCellValue().equals(""));
+		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(2).getCell(18).getStringCellValue().equals("LIVE MMSP"));
 		
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(0).getStringCellValue().equals("Connelly, John"));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(3).getCell(1).getStringCellValue().equals("TEST SHOT 3"));
