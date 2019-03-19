@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.File;
@@ -912,6 +913,35 @@ public class SpreadsheetHandler {
 		}
 		
 		return formatedString;
+	}
+	
+	/**
+	 * The method present a yes/no dialog to the operator asking if this is an update to 
+	 * a previously released schedule.  
+	 * @return boolean based on operator click
+	 */
+	public boolean UpdateYesNoBox() {
+		
+		boolean isUpdate;
+		
+		//default icon, custom title
+        int reply = JOptionPane.showConfirmDialog(
+            null,
+            "Are you updating a previously released schedule?",
+            "Is this an Update?",
+            JOptionPane.YES_NO_OPTION);
+
+        if (reply == JOptionPane.YES_OPTION) {
+            //JOptionPane.showMessageDialog(null, "HELLO");
+            isUpdate = true;
+        }
+        else {
+            //JOptionPane.showMessageDialog(null, "GOODBYE");
+            isUpdate = false;
+        }
+
+        return isUpdate;
+		
 	}
 
 }
