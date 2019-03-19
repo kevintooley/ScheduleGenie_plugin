@@ -95,18 +95,34 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Create user; needed for LoadColumns API
 		User myUser = model.getUser();
 		
-		// Set the date in the model based on the current view in Rapla
-		Calendar calExp = Calendar.getInstance();
-		calExp.setTime(model.getSelectedDate());
+		/*
+		 * Rapla primarily uses GMT as the standard for dates within the program.  However
+		 * these dates are translated to local time when displayed to the operator.  Because
+		 * of the use of GMT, we have to initialize things is the appropriate manner in order
+		 * to get dates that mean what we want them to mean.  Below I used the calendar
+		 * to manipulate the various times, eventually setting the needed Date object with
+		 * the calendar output.  The Calendar API is an easy and efficient method to do this.
+		 * 
+		 * First, set the date in the model based on the current view in Rapla
+		 */
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(model.getSelectedDate());
 		
-		// Set to Monday at midnight of the given week
-		calExp.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		calExp.set(Calendar.HOUR, 0);
-		calExp.set(Calendar.AM_PM, Calendar.AM);
-		calExp.set(Calendar.MINUTE, 0);
-		calExp.set(Calendar.SECOND, 0);
+		// Set the time to Monday at midnight of the given week
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.HOUR, 0);
+		cal.set(Calendar.AM_PM, Calendar.AM);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);		
 		
-		Date newStart = calExp.getTime();
+		/*
+		 * The newStart and newEnd are used for appointment calculations later in this function.
+		 * newStart is set to Monday at 0000.  newEnd adds 7 days to this (i.e. next Monday
+		 * at 0000).  This allows for a shot that ends at 2400 on Sunday night.  Both the newStart
+		 * and newEnd are used to set the model start and end points.
+		 */
+		Date newStart = cal.getTime();
 		model.setStartDate(newStart);
 		
 		Date newEnd = getDate(newStart, false);
@@ -117,13 +133,24 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		 * seems to be returning GMT.  As a result, I needed to use the below calculations/methods in order
 		 * to produce startDate and endDate.  
 		 * FIXME: fix the toLocaleString method
+		 * 
+		 * The following sets the date on the top of the spreadsheets.  These dates do not affect the
+		 * dates of the appointment objects.  Those are handled above in the model.
 		 */
-		//Date startDate = getDate(model.getStartDate(), true);
 		Date startDate = model.getStartDate();
-		//System.out.println("Start date: " + startDate);
 		
-		Date endDate = getDate(startDate, false);
-		//System.out.println("End date is: " + endDate);
+		// Reset the calendar object to the model view (i.e. the week that Rapla is displaying)
+		cal.setTime(model.getSelectedDate());
+		
+		// Set the current time to the following Sunday at 2359
+		cal.add(Calendar.DAY_OF_MONTH, 6);
+		cal.add(Calendar.MINUTE, -1);
+		
+		/* 
+		 * Set the endDate to the cal value.  This will be displayed in the header of each schedule.
+		 * endDate has no other roles or needs
+		 */
+		Date endDate = cal.getTime();
 		
 		// List of labs
 		final ArrayList<String> labList = new ArrayList<String>();
@@ -210,8 +237,6 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			
 			for (Object appointment : room.shots) {
 				
-				// FIXME: Shots that start at midnight on Monday are not being processed
-				
 				ArrayList<String> rowFields = new ArrayList<String>();
 				
 				SimpleDateFormat format = new SimpleDateFormat("HHmm");
@@ -284,6 +309,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		}
 		
 		DateFormat sdfyyMMdd = new SimpleDateFormat("yyMMdd");
+		sdfyyMMdd.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		// Use a simple string for the filename instead of the long sequence commented below
 		final String scheduleName = "_NSCC_Test_Schedules";
@@ -359,6 +385,14 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	    }
 	}
 	
+	/**
+	 * The getDate function is used in various areas of the application to return a properly
+	 * formated date field to the caller.  As of March 2019, the calcStartTime portion of this 
+	 * function is deprecated.  
+	 * @param dateFromModel
+	 * @param calcStartTime
+	 * @return
+	 */
 	private Date getDate (Date dateFromModel, boolean calcStartTime) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -368,9 +402,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			cal.set(Calendar.HOUR, 0);
 		}
 		else {
-			cal.add(Calendar.DAY_OF_MONTH, 6);
-			cal.set(Calendar.HOUR, 23);
-			cal.set(Calendar.MINUTE, 59);
+			cal.add(Calendar.DAY_OF_MONTH, 7);
 		}
 		return cal.getTime();
 		
@@ -378,6 +410,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	
 	private String formatShortDate (Date date) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd");
+		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return format.format(date);
 	}
 	
@@ -385,7 +418,8 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		
 		// 3/11/2019: Fixed shots that start at midnight were not scheduled on the correct day
-		format.setTimeZone( getRaplaLocale().getTimeZone());
+		//format.setTimeZone( getRaplaLocale().getTimeZone());
+		format.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		return format.format(date);
 	}
@@ -393,6 +427,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 	private String getDayOfWeek (Date date) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
+		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
 	}
 	

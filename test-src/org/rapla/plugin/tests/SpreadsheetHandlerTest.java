@@ -90,7 +90,135 @@ public class SpreadsheetHandlerTest {
 		
 	}
 	
+	/**
+	 * This test will populate the bulk upload spreadsheet with a standard eight shots per day
+	 * beginning at 0000 on Monday morning and going through Sunday night at 2400.  
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
 	@Test
+	public void testNEWPopulateBulkUpload() throws FileNotFoundException, IOException {
+		
+		/*
+		 * This method does not actually use the BU_EveryShot1.xlsx spreadsheet.  However,
+		 * the closeWorkbook() method does require that both the xlsx and xls spreadsheets
+		 * as arguments.  
+		 */
+		File f = new File("C:/Users/ktooley/Documents/TEST/BU_EveryShot1.xlsx");
+		if (f.exists()) {
+			if (f.delete()) { System.out.println("File deleted"); }
+		}
+		
+		File f1 = new File("C:/Users/ktooley/Documents/TEST/BU_EveryShot2.xls");
+		if (f1.exists()) {
+			if (f1.delete()) { System.out.println("File deleted"); }
+		}
+		
+		// The following are input arguments for the populateBulkUpload method
+		int dayInt = 1;   // day number in date argument 
+		int shotInt = 1;  // shot number in shotName argument 
+		int rowInt = 1;   // row number in rowNumber argument 
+		
+		// This keeps track of array index for the shotStartEndTimes array
+		int startCounter = 0; 
+		String [] shotStartEndTimes = {"0000", "0300", "0600", "0900", "1200", "1500", "1800", "2100", "2400"};
+		
+		
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
+		
+		// For loop for each day of week
+		for (int i = 0; i < 7; i++) {
+						
+			// For loop for each shot of day
+			for (int j = 0; j < 8; j++) {
+				
+				sh.populateBulkUpload("Shot_Template", 
+						  "BL10_SUITE", 
+						  rowInt, 
+						  "TEST SHOT " + shotInt, 
+						  "1/" + dayInt + "/2019", 
+						  shotStartEndTimes[startCounter], 
+						  shotStartEndTimes[startCounter + 1], 
+						  "BUILD: 30B, CDLMS2, LIVE CEC, TE: Element, BL10_SUITE, ELEMENT: SYS ADMIN, CONFIG: BL10_DDG, LIVE MMSP", 
+						  "Tooley, Kevin");
+				
+				shotInt++;
+				rowInt++;
+				startCounter++;
+				
+			}
+			
+			dayInt++;
+			startCounter = 0;  // Resets at the end of the day
+			
+		}
+		
+		/*
+		 * See note above regarding the closeWorkbook() method.  
+		 * Summary:  Although we don't initialize both files, we need both in this call.
+		 */
+		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/BU_EveryShot1.xlsx", 
+				"C:/Users/ktooley/Documents/TEST/BU_EveryShot2.xls");
+		
+		assertTrue(f.exists());
+		assertTrue(f1.exists());
+		
+		// Reset all counters in anticipation for asserts
+		dayInt = 1;
+		shotInt = 1;
+		rowInt = 1;
+		startCounter = 0;
+		
+		// For loop for each day of week
+		for (int i = 0; i < 7; i++) {
+						
+			// For loop for each shot of day
+			for (int j = 0; j < 8; j++) {
+				
+				String tmpDay = String.format("%02d", dayInt);  // Forces a two digit day number for the toString() of getCell(6) below
+				
+				/*
+				 * Asserts for each cell in row.
+				 * 
+				 * Note:  At row 36 of the spreadsheet (36 as labeled in Excel), the date field turns into an integer representing the
+				 * date.  This appears to function without issue on the Test Site Scheduling System, but it is visually unappealing.
+				 * Troubleshooting the local application does not show any errors.  I suspect that Microsoft may have an issue with
+				 * this. 
+				 */
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(0).getStringCellValue().equals("Tooley, Kevin"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(1).getStringCellValue().equals("TEST SHOT " + shotInt));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(2).getStringCellValue().equals(""));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(3).getStringCellValue().equals("USN-CSEA ACB20"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(4).getStringCellValue().equals("Element"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(5).getStringCellValue().equals("SYS ADMIN"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(6).toString().equals(tmpDay + "-Jan-2019")); //.format("%02d\n", i);  // Will print 09
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(7).getNumericCellValue() == Integer.parseInt(shotStartEndTimes[startCounter]));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(8).getNumericCellValue() == Integer.parseInt(shotStartEndTimes[startCounter + 1]));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(9).getStringCellValue().equals("NSCC BL10 CND"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(10).getStringCellValue().equals("NSCC BL10 WCS"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(11).getStringCellValue().equals("NSCC BL10 SPY"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(12).getStringCellValue().equals("NSCC BL10 ADS"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(13).getStringCellValue().equals("NSCC BL10 ACTS"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(14).getStringCellValue().equals("NSCC BL10 ORTS"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(15).getStringCellValue().equals("CDLMS2"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(16).getStringCellValue().equals("MLST3 (CDLMS2)"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(17).getStringCellValue().equals("LIVE CEC/WASP"));
+				assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(rowInt).getCell(18).getStringCellValue().equals("LIVE MMSP"));
+			
+				shotInt++;
+				rowInt++;
+				startCounter++;
+				
+			}
+			
+			dayInt++;
+			startCounter = 0;  // Resets at the end of the day
+			
+		}
+
+	}
+	
+	/*@Test
 	public void testPopulateBulkUpload() throws FileNotFoundException, IOException {
 		
 		File f = new File("C:/Users/ktooley/Documents/TEST/BU_file1.xlsx");
@@ -260,7 +388,7 @@ public class SpreadsheetHandlerTest {
 		
 		
 		
-	}
+	}*/
 	
 	@Test
 	public void testGetShotRiString() throws FileNotFoundException, IOException {
@@ -341,7 +469,7 @@ public class SpreadsheetHandlerTest {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void testExtendedPopulateBulkUpload() throws FileNotFoundException, IOException {
 		
 		File f = new File("C:/Users/ktooley/Documents/TEST/BU_file3.xlsx");
@@ -972,7 +1100,7 @@ public class SpreadsheetHandlerTest {
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(40).getCell(16).getStringCellValue().equals(""));
 		assertTrue(sh.bulkUpload.getSheet("Shot_Template").getRow(40).getCell(17).getStringCellValue().equals(""));
 		
-	}
+	}*/
 	
 	@Test
 	public void testXSSFDateFieldOnSpreadsheet() throws FileNotFoundException, IOException {
