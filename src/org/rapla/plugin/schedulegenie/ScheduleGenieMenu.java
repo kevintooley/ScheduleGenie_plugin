@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -16,6 +18,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.rapla.components.iolayer.IOInterface;
@@ -318,11 +321,35 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		// Get user home property
 		final String userHome = System.getProperty("user.home");
 		
-		String scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
-		String bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+		boolean isUpdate = UpdateYesNoBox(getMainComponent());
 		
+		String scheduleFilename, bulkFilename;
+		
+		if (isUpdate) {
+			
+			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmss");
+			String hhmmss = LocalTime.now().format(dtf);
+			
+			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + "_" + hhmmss + ".xlsx";
+			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			
+		}
+		else {
+		
+			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			
+		}
 		
 		sh.closeWorkbook(scheduleFilename, bulkFilename);
+		
+		if (isUpdate) {
+			
+			String oldSchedule = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			
+			sh.OpenWorkbooks(scheduleFilename, oldSchedule);
+			
+		}
 		
 		exportFinished(getMainComponent());
 		
@@ -429,6 +456,33 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		cal.setTime(date);
 		cal.setTimeZone(TimeZone.getTimeZone("GMT"));
 		return cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
+	}
+	
+	/**
+	 * The method present a yes/no dialog to the operator asking if this is an update to 
+	 * @param topLevel main frame.  Needed to close object properly
+	 * @return boolean (true if update, false if new schedule)
+	 */
+	public boolean UpdateYesNoBox(Component topLevel) {
+		
+		//default icon, custom title
+        Object reply = JOptionPane.showConfirmDialog(
+        	topLevel,
+            "Are you updating a previously released schedule?",
+            "Is this an Update?",
+            JOptionPane.YES_NO_OPTION);
+
+        if (reply.equals(JOptionPane.YES_OPTION)) {
+        	
+            return true;
+            
+        }
+        else {
+        	
+            return false;
+            
+        }
+		
 	}
 	
 }

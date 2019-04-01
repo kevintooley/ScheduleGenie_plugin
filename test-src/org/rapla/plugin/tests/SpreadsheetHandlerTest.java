@@ -27,6 +27,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.rapla.plugin.schedulegenie.SpreadsheetHandler;
 
@@ -249,6 +250,11 @@ public class SpreadsheetHandlerTest {
 	public void testGetShotRiString() throws FileNotFoundException, IOException {
 		
 		SpreadsheetHandler sh = new SpreadsheetHandler(true);
+		
+		//Empty String
+		String ri0 = "";
+		String test0 = sh.getShotRiString(ri0);
+		assertTrue(test0.equals(""));
 		
 		//Size 2
 		String ri1 = "Tooley, Kevin";
@@ -504,7 +510,7 @@ public class SpreadsheetHandlerTest {
 		
 	}
 	
-	@Test
+	/*@Test
 	public void TestUpdateYesNoBox() {
 		
 		try {
@@ -539,6 +545,287 @@ public class SpreadsheetHandlerTest {
 			e.printStackTrace();
 		}
 
+	}*/
+	
+	@Test
+	public void TestFileCompare() throws FileNotFoundException, IOException {
+		
+		SpreadsheetHandler sh1 = new SpreadsheetHandler(true);
+		//"BUILD: 30B, CDLMS2, LIVE CEC, TE: Element, BL10_SUITE, ELEMENT: SYS ADMIN, CONFIG: BL10_DDG, LIVE MMSP"
+		sh1.createScheduleSheet("AMOD1", "12/10", "12/16");
+		sh1.createDateRow("AMOD1", 3, "Monday", "12/3/2018");
+		sh1.addShotToSchedule("AMOD1", 
+								4, 
+								"ADS", 
+								"0600", 
+								"0900", 
+								"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: ADS, CONFIG: BL9_DDG", 
+								"Tooley, Kevin");
+		sh1.addShotToSchedule("AMOD1", 
+								5, 
+								"SPY", 
+								"0900", 
+								"1200", 
+								"BUILD: 30, LIVE CEC, TE: Element, AMOD1, ELEMENT: SPY, CONFIG: BL9_DDG, LIVE MMSP", 
+								"Tooley, Kevin");
+		sh1.addShotToSchedule("AMOD1", 
+								6, 
+								"Load & Cycle", 
+								"1200", 
+								"1500", 
+								"BUILD: 31, CDLMS1, LIVE CEC, TE: MA, AMOD1, ELEMENT: SPY, CONFIG: BL9_DDG, LIVE MMSP", 
+								"Tooley, Kevin");
+		
+		sh1.closeWorkbook("C:/Users/ktooley/Documents/TEST/FileCompare_oldSchedule.xlsx", "C:/Users/ktooley/Documents/TEST/FileCompare_oldSchedule.xls");
+		
+		SpreadsheetHandler sh2 = new SpreadsheetHandler(true);
+		
+		sh2.createScheduleSheet("AMOD1", "12/10", "12/16");
+		sh2.createDateRow("AMOD1", 3, "Monday", "12/3/2018");
+		sh2.addShotToSchedule("AMOD1", 
+								4, 
+								"SPY", 
+								"0600", 
+								"0900", 
+								"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: SPY, CONFIG: BL9_DDG, LIVE MMSP", 
+								"Doe, John");
+		sh2.addShotToSchedule("AMOD1", 
+								5, 
+								"SPY", 
+								"0900", 
+								"1300", 
+								"BUILD: 31, LIVE CEC, TE: Element, AMOD1, ELEMENT: SPY, CONFIG: BL9_DDG, LIVE MMSP", 
+								"Tooley, Kevin");
+		//sh2.createDateRow("AMOD1", 6, "Tuesday", "12/4/2018");
+		sh2.addShotToSchedule("AMOD1", 
+								6, 
+								"CND", 
+								"1300", 
+								"1500", 
+								"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: CND, CONFIG: BL9_DDG", 
+								"Tooley, Kevin");
+		sh2.addShotToSchedule("AMOD1", 
+								7, 
+								"CND", 
+								"1500", 
+								"1800", 
+								"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: CND, CONFIG: BL9_DDG", 
+								"Tooley, Kevin");
+		
+		sh2.closeWorkbook("C:/Users/ktooley/Documents/TEST/FileCompare_inMemory.xlsx", "C:/Users/ktooley/Documents/TEST/FileCompare_inMemory.xls");
+		
+		XSSFWorkbook nwb = new XSSFWorkbook(new FileInputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_inMemory.xlsx"));
+		XSSFWorkbook owb = new XSSFWorkbook(new FileInputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_oldSchedule.xlsx"));
+		
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
+		
+		sh.FileCompare(nwb, owb);
+
+		owb.close();
+		
+		FileOutputStream scheduleOutStream = null;
+		try {
+
+			scheduleOutStream = new FileOutputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_inMemory.xlsx");
+
+
+		} catch (FileNotFoundException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			nwb.write(scheduleOutStream);
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			scheduleOutStream.close();
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
+	@Test
+	public void TestExtendedFileCompare() throws FileNotFoundException, IOException {
+		
+		// The following are input arguments for the populateBulkUpload method
+		int dayInt = 1;   // day number in date argument 
+		int shotInt = 1;  // shot number in shotName argument 
+		int rowInt = 3;   // row number in rowNumber argument 
+		
+		// This keeps track of array index for the shotStartEndTimes array
+		int startCounter = 0; 
+		String [] shotStartEndTimes = {"0000", "0300", "0600", "0900", "1200", "1500", "1800", "2100", "2400"};
+		int dayCounter = 0;
+		String [] dayOfWeek = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", ""};
+		
+		SpreadsheetHandler sh1 = new SpreadsheetHandler(true);
+		sh1.createScheduleSheet("AMOD1", "12/1", "12/7");
+		sh1.createDateRow("AMOD1", rowInt, dayOfWeek[dayCounter], "12/" + dayInt + "/2018");
+		rowInt++;
+		
+		// For loop for each day of week
+		for (int i = 0; i < 7; i++) {
+						
+			// For loop for each shot of day
+			for (int j = 0; j < 8; j++) {
+			
+				sh1.addShotToSchedule("AMOD1", 
+									rowInt, 
+									"SHOT" + shotInt, 
+									shotStartEndTimes[startCounter], 
+									shotStartEndTimes[startCounter + 1], 
+									"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: ADS, CONFIG: BL9_DDG", 
+									"Tooley, Kevin");
+			
+				System.out.println("RowInt oldSchedule: " + rowInt);
+				shotInt++;
+				rowInt++;
+				startCounter++;
+			
+			}
+			
+			if (dayCounter == 6) {
+				break;
+			}
+			dayInt++;
+			startCounter = 0;  // Resets at the end of the day
+			dayCounter++;
+			
+			sh1.createDateRow("AMOD1", rowInt, dayOfWeek[dayCounter], "12/" + dayInt + "/2018");
+			rowInt++;
+		
+		}
+		
+		sh1.closeWorkbook("C:/Users/ktooley/Documents/TEST/FileCompare_oldSchedule1.xlsx", "C:/Users/ktooley/Documents/TEST/FileCompare_oldSchedule1.xls");
+		
+		dayInt = 1;
+		shotInt = 1;
+		rowInt = 3;
+		startCounter = 0; 
+		dayCounter = 0;
+		
+		SpreadsheetHandler sh2 = new SpreadsheetHandler(true);
+		sh2.createScheduleSheet("AMOD1", "12/1", "12/7");
+		sh2.createDateRow("AMOD1", rowInt, dayOfWeek[dayCounter], "12/" + dayInt + "/2018");
+		rowInt++;
+		
+		// For loop for each day of week
+		for (int i = 0; i < 7; i++) {
+						
+			// For loop for each shot of day
+			for (int j = 0; j < 8; j++) {
+				
+				/*if (dayCounter == 0 && j == 7) {
+					rowInt--;
+					System.out.println("Skipping row...");
+				}
+				else*/ if (j == 4 && dayCounter == 1) {
+					
+					sh2.addShotToSchedule("AMOD1", 
+							rowInt, 
+							"SHOT" + shotInt, 
+							shotStartEndTimes[startCounter], 
+							shotStartEndTimes[startCounter + 2], 
+							//"AMOD1", 
+							//"");
+							"BUILD: 30, LIVE MMSP, LIVE CEC, TE: Element, AMOD1, ELEMENT: ADS, CONFIG: BL9_DDG", 
+							"Tooley, Kevin");
+					startCounter++;
+					j++;
+					shotInt++;
+					
+				}
+				else if (j == 3 && dayCounter == 0) {
+					sh2.addShotToSchedule("AMOD1", 
+							rowInt, 
+							"OPEN", 
+							shotStartEndTimes[startCounter], 
+							shotStartEndTimes[startCounter + 1], 
+							"AMOD1", 
+							"");
+					//startCounter++;
+					//j++;
+					//shotInt++;
+				}
+				else if (j == 3 && dayCounter == 2) {
+					sh2.addShotToSchedule("AMOD1", 
+							rowInt, 
+							"SHOT" + shotInt, 
+							shotStartEndTimes[startCounter], 
+							shotStartEndTimes[startCounter + 2], 
+							"BUILD: 30, LIVE MMSP, LIVE CEC, TE: Element, AMOD1, ELEMENT: ADS, CONFIG: BL9_DDG", 
+							"Tooley, Kevin");
+					startCounter++;
+					j++;
+					shotInt++;
+				}
+				else {
+
+					sh2.addShotToSchedule("AMOD1", 
+										rowInt, 
+										"SHOT" + shotInt, 
+										shotStartEndTimes[startCounter], 
+										shotStartEndTimes[startCounter + 1], 
+										"BUILD: 31, CDLMS2, LIVE CEC, TE: Element, AMOD1, ELEMENT: ADS, CONFIG: BL9_DDG", 
+										"Tooley, Kevin");
+				}
+				
+					System.out.println("RowInt inMemory: " + rowInt);
+					shotInt++;
+					rowInt++;
+					startCounter++;
+					
+			}
+		
+			if (dayCounter == 6) {
+				break;
+			}
+			dayInt++;
+			startCounter = 0;  // Resets at the end of the day
+			dayCounter++;
+			
+			sh2.createDateRow("AMOD1", rowInt, dayOfWeek[dayCounter], "12/" + dayInt + "/2018");
+			rowInt++;
+		
+		}
+		
+		sh2.closeWorkbook("C:/Users/ktooley/Documents/TEST/FileCompare_inMemory1.xlsx", "C:/Users/ktooley/Documents/TEST/FileCompare_inMemory1.xls");
+		
+		XSSFWorkbook nwb = new XSSFWorkbook(new FileInputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_inMemory1.xlsx"));
+		XSSFWorkbook owb = new XSSFWorkbook(new FileInputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_oldSchedule1.xlsx"));
+		
+		SpreadsheetHandler sh = new SpreadsheetHandler(true);
+		
+		sh.FileCompare(nwb, owb);
+
+		owb.close();
+		
+		FileOutputStream scheduleOutStream = null;
+		try {
+
+			scheduleOutStream = new FileOutputStream("C:\\Users\\ktooley\\Documents\\TEST\\FileCompare_inMemory1.xlsx");
+
+
+		} catch (FileNotFoundException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			nwb.write(scheduleOutStream);
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			scheduleOutStream.close();
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }

@@ -8,7 +8,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -22,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.swing.JFileChooser;
@@ -42,8 +42,10 @@ public class SpreadsheetHandler {
 	// Declare the workbook used for the lab schedules
 	public XSSFWorkbook workbook;
 	public HSSFWorkbook bulkUpload;
+	public XSSFWorkbook updateWorkbook;
 	
 	private boolean isUnitTest;
+	
 	
 	/**
 	 * Accessor method for the private isUnitTest boolean
@@ -242,15 +244,13 @@ public class SpreadsheetHandler {
 	}
 	
 	/**
-	 * This method creates a new date row for each day in the excel schedule
-	 * @param sheetName
-	 * @param rowNumber
-	 * @param day
-	 * @param date
+	 * Create the appropriate font and cell style for date rows in the excel schedule
+	 * @return XSSFCellStyle
+	 * @see createDateRow()
 	 */
-	public void createDateRow(String sheetName, int rowNumber, String day, String date) {
+	public XSSFCellStyle createDateRowStyles() {
 		
-        // Create a Font for styling header cells
+		// Create a Font for styling header cells
         XSSFFont dateRowFont = workbook.createFont();
         dateRowFont.setFontName("ARIAL");
         dateRowFont.setFontHeightInPoints((short) 8);
@@ -267,6 +267,19 @@ public class SpreadsheetHandler {
         dateRowCellStyle.setBorderRight(BorderStyle.THIN);
         dateRowCellStyle.setBorderLeft(BorderStyle.THIN);
         
+        return dateRowCellStyle;
+        
+	}
+	
+	/**
+	 * This method creates a new date row for each day in the excel schedule
+	 * @param sheetName
+	 * @param rowNumber
+	 * @param day
+	 * @param date
+	 */
+	public void createDateRow(String sheetName, int rowNumber, String day, String date) {
+        
         // Create Row B, merge
         XSSFSheet sheet = workbook.getSheet(sheetName);
         XSSFRow dateRow = sheet.createRow(rowNumber);
@@ -274,7 +287,8 @@ public class SpreadsheetHandler {
         // Create cells for Row B
         for(int i = 0; i < 13; i++) {
             XSSFCell cell = dateRow.createCell(i);
-            cell.setCellStyle(dateRowCellStyle);
+            //cell.setCellStyle(dateRowCellStyle);
+            cell.setCellStyle(createDateRowStyles());
             switch(i) {
             case 0:
             	cell.setCellValue(day);
@@ -285,6 +299,60 @@ public class SpreadsheetHandler {
             }
         }
 		
+	}
+	
+	/**
+	 * This method is used to set the row/cell font and row/cell style.  
+	 * @return XSSFCellStyle
+	 * @see addShotToSchedule()
+	 */
+	public XSSFCellStyle MakeRowStyles() {
+		
+		// Create a Font for styling new row
+        XSSFFont newRowFont = workbook.createFont();
+        newRowFont.setFontName("ARIAL");
+        newRowFont.setFontHeightInPoints((short) 9);
+        newRowFont.setBold(false);
+        
+        // Create a CellStyle with the font
+        XSSFCellStyle newRowCellStyle = workbook.createCellStyle();
+        newRowCellStyle.setFont(newRowFont);
+        newRowCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        newRowCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        newRowCellStyle.setBorderBottom(BorderStyle.THIN);
+        newRowCellStyle.setBorderTop(BorderStyle.THIN);
+        newRowCellStyle.setBorderRight(BorderStyle.THIN);
+        newRowCellStyle.setBorderLeft(BorderStyle.THIN);
+        
+        return newRowCellStyle;
+	}
+	
+	/**
+	 * This method is used to set the row/cell font and row/cell style for the time cells in the schdule (column 0 and 1).
+	 * @return XSSFCellStyle
+	 * @see addShotToSchedule()
+	 */
+	public XSSFCellStyle MakeTimeCellStyles() {
+		
+		// Create a Font for styling time fields in new row
+        XSSFFont newRowTimeFont = workbook.createFont();
+        newRowTimeFont.setFontName("ARIAL");
+        newRowTimeFont.setFontHeightInPoints((short) 8);
+        newRowTimeFont.setBold(false);
+        
+        // Create a CellStyle with the font for the time fields
+        DataFormat format = workbook.createDataFormat(); // Sets up format for the time fields
+        XSSFCellStyle newRowTimeCellStyle = workbook.createCellStyle();
+        newRowTimeCellStyle.setFont(newRowTimeFont);
+        newRowTimeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        newRowTimeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        newRowTimeCellStyle.setBorderBottom(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderTop(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderRight(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderLeft(BorderStyle.THIN);
+        newRowTimeCellStyle.setDataFormat(format.getFormat("0000"));
+        
+        return newRowTimeCellStyle;
 	}
 	
 	/**
@@ -299,41 +367,7 @@ public class SpreadsheetHandler {
 	 */
 	public void addShotToSchedule(String sheetName, int rowNumber, String shotName, String startTime, String endTime, String resources, String ri) {
 		
-		// Create a Font for styling new row
-        XSSFFont newRowFont = workbook.createFont();
-        newRowFont.setFontName("ARIAL");
-        newRowFont.setFontHeightInPoints((short) 9);
-        newRowFont.setBold(false);
-        
-        // Create a Font for styling time fields in new row
-        XSSFFont newRowTimeFont = workbook.createFont();
-        newRowTimeFont.setFontName("ARIAL");
-        newRowTimeFont.setFontHeightInPoints((short) 8);
-        newRowTimeFont.setBold(false);
-        
-        // Create a CellStyle with the font
-        XSSFCellStyle newRowCellStyle = workbook.createCellStyle();
-        newRowCellStyle.setFont(newRowFont);
-        newRowCellStyle.setAlignment(HorizontalAlignment.CENTER);
-        newRowCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        newRowCellStyle.setBorderBottom(BorderStyle.THIN);
-        newRowCellStyle.setBorderTop(BorderStyle.THIN);
-        newRowCellStyle.setBorderRight(BorderStyle.THIN);
-        newRowCellStyle.setBorderLeft(BorderStyle.THIN);
-        
-        // Create a CellStyle with the font for the time fields
-        DataFormat format = workbook.createDataFormat(); // Sets up format for the time fields
-        XSSFCellStyle newRowTimeCellStyle = workbook.createCellStyle();
-        newRowTimeCellStyle.setFont(newRowTimeFont);
-        newRowTimeCellStyle.setAlignment(HorizontalAlignment.CENTER);
-        newRowTimeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        newRowTimeCellStyle.setBorderBottom(BorderStyle.THIN);
-        newRowTimeCellStyle.setBorderTop(BorderStyle.THIN);
-        newRowTimeCellStyle.setBorderRight(BorderStyle.THIN);
-        newRowTimeCellStyle.setBorderLeft(BorderStyle.THIN);
-        newRowTimeCellStyle.setDataFormat(format.getFormat("0000"));
-        
-        // Add row to sheet
+		// Add row to sheet
         XSSFSheet sheet = workbook.getSheet(sheetName);
         XSSFRow newRow = sheet.createRow(rowNumber);
         
@@ -348,13 +382,13 @@ public class SpreadsheetHandler {
             switch(i) {
             case 0:
             	
-            	cell.setCellStyle(newRowTimeCellStyle);
+            	cell.setCellStyle(MakeTimeCellStyles());
             	cell.setCellValue(Integer.parseInt(startTime));
             	break;
             	
             case 1:
             	
-            	cell.setCellStyle(newRowTimeCellStyle);
+            	cell.setCellStyle(MakeTimeCellStyles());
             	if (Integer.parseInt(endTime) == 0) 
             		cell.setCellValue(Integer.parseInt("2400"));
             	else 
@@ -363,7 +397,7 @@ public class SpreadsheetHandler {
             	
             case 2:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	
             	String buildId = "";
             	for (String res : resourceArray) {
@@ -379,7 +413,7 @@ public class SpreadsheetHandler {
             	
             case 3:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	
             	String configId = "";
             	for (String res : resourceArray) {
@@ -395,7 +429,7 @@ public class SpreadsheetHandler {
             	
             case 4:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("CDLMS1"))
             		cell.setCellValue("X");
             	
@@ -403,7 +437,7 @@ public class SpreadsheetHandler {
             	
             case 5:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("CDLMS2"))           		
             		cell.setCellValue("X");
             	
@@ -411,7 +445,7 @@ public class SpreadsheetHandler {
             	
             case 6:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("UMG1"))            		
             		cell.setCellValue("X");
             	
@@ -419,7 +453,7 @@ public class SpreadsheetHandler {
             	
             case 7:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("UMG2"))
             		cell.setCellValue("X");
             	
@@ -427,7 +461,7 @@ public class SpreadsheetHandler {
             	
             case 8:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("CEC"))
             		cell.setCellValue("X");
             	
@@ -435,7 +469,7 @@ public class SpreadsheetHandler {
             	
             case 9:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("JMCIS"))
             		cell.setCellValue("X");
             	
@@ -443,7 +477,7 @@ public class SpreadsheetHandler {
             	
             case 10:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("MMSP"))
             		cell.setCellValue("X");
             	
@@ -452,7 +486,7 @@ public class SpreadsheetHandler {
             	
             case 11:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	
 	            cell.setCellValue(getShotRiString(ri));
 	            		
@@ -462,14 +496,14 @@ public class SpreadsheetHandler {
             	
             case 12:
             	
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             	if (resources.contains("CDLMS") || resources.contains("UMG"))
             		cell.setCellValue("MLST3");
             	
             	break;
             	
             default:
-            	cell.setCellStyle(newRowCellStyle);
+            	cell.setCellStyle(MakeRowStyles());
             }
         }
 		
@@ -817,6 +851,9 @@ public class SpreadsheetHandler {
 	 */
 	public String getShotRiString(String ri) {
 		
+		if (ri == "")
+			return "";
+		
 		String formatedString = "";
 		
 		// Split the input ri string into an array and strip the whitespace
@@ -916,31 +953,251 @@ public class SpreadsheetHandler {
 	}
 	
 	/**
-	 * The method present a yes/no dialog to the operator asking if this is an update to 
-	 * a previously released schedule.  
-	 * @return boolean based on operator click
+	 * This method is used to set the row/cell font and row/cell style.  
+	 * @return XSSFCellStyle
+	 * @see FileCompare()
 	 */
-	public boolean UpdateYesNoBox() {
+	public XSSFCellStyle updateRowStyles() {
 		
-		boolean isUpdate;
+		// Create a Font for styling new row
+        XSSFFont newRowFont = updateWorkbook.createFont();
+        newRowFont.setFontName("ARIAL");
+        newRowFont.setFontHeightInPoints((short) 9);
+        newRowFont.setBold(false);
+        
+        // Create a CellStyle with the font
+        XSSFCellStyle newRowCellStyle = updateWorkbook.createCellStyle();
+        newRowCellStyle.setFont(newRowFont);
+        newRowCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        newRowCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        newRowCellStyle.setBorderBottom(BorderStyle.THIN);
+        newRowCellStyle.setBorderTop(BorderStyle.THIN);
+        newRowCellStyle.setBorderRight(BorderStyle.THIN);
+        newRowCellStyle.setBorderLeft(BorderStyle.THIN);
+        newRowCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        newRowCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        return newRowCellStyle;
+	}
+	
+	/**
+	 * This method is used to set the row/cell font and row/cell style for the time cells in the schdule (column 0 and 1).
+	 * @return XSSFCellStyle
+	 * @see FileCompare()
+	 */
+	public XSSFCellStyle updateTimeCellStyles() {
 		
-		//default icon, custom title
-        int reply = JOptionPane.showConfirmDialog(
-            null,
-            "Are you updating a previously released schedule?",
-            "Is this an Update?",
-            JOptionPane.YES_NO_OPTION);
+        // Create a Font for styling time fields in new row
+        XSSFFont newRowTimeFont = updateWorkbook.createFont();
+        newRowTimeFont.setFontName("ARIAL");
+        newRowTimeFont.setFontHeightInPoints((short) 8);
+        newRowTimeFont.setBold(false);
+        
+        // Create a CellStyle with the font for the time fields
+        DataFormat format = updateWorkbook.createDataFormat(); // Sets up format for the time fields
+        XSSFCellStyle newRowTimeCellStyle = updateWorkbook.createCellStyle();
+        newRowTimeCellStyle.setFont(newRowTimeFont);
+        newRowTimeCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        newRowTimeCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        newRowTimeCellStyle.setBorderBottom(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderTop(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderRight(BorderStyle.THIN);
+        newRowTimeCellStyle.setBorderLeft(BorderStyle.THIN);
+        newRowTimeCellStyle.setDataFormat(format.getFormat("0000"));
+        newRowTimeCellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
+        newRowTimeCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        
+        return newRowTimeCellStyle;
+	}
+	
+	/**
+	 * The FileCompare method takes a previous version of the schedule ("new" workbook) and an old version 
+	 * of the schedule ("old" workbook) as inputs.  The method then compares the two files and annotates any
+	 * differences by highlighting them yellow in the new schedule.  
+	 * @param new_workbook
+	 * @param old_workbook
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public boolean FileCompare(XSSFWorkbook new_workbook, XSSFWorkbook old_workbook) throws FileNotFoundException, IOException {
+		
+		workbook = old_workbook;
+		updateWorkbook = new_workbook;
+		
+		int sheetCounter = 0;
+		//int rowCounter = 0;
+		//int cellCounter = 0;
+		
+		Iterator<Sheet> oldSheetIterator = workbook.iterator();
+		Iterator<Sheet> newSheetIterator = updateWorkbook.iterator();
+		
+		while (oldSheetIterator.hasNext() && newSheetIterator.hasNext()) {
+			
+			//XSSFSheet old_sheet = old_workbook.getSheetAt(sheetCounter);
+		    //XSSFSheet new_sheet = new_workbook.getSheetAt(sheetCounter);
+		    XSSFSheet old_sheet = (XSSFSheet) oldSheetIterator.next();
+		    XSSFSheet new_sheet = (XSSFSheet) newSheetIterator.next();
+		    
+		    System.out.println("Sheet Name: " + new_sheet.getSheetName());
+		    
+		    Iterator<Row> oldRowIterator = old_sheet.iterator();
+		    Iterator<Row> newRowIterator = new_sheet.iterator();
+		    
+		    while (oldRowIterator.hasNext() && newRowIterator.hasNext()) {
+		    	
+		        XSSFRow currentRow_old = (XSSFRow) oldRowIterator.next();
+		        XSSFRow currentRow_new = (XSSFRow) newRowIterator.next();
+		        
+		        // If cell 0 in the row is a string, this is a date row; Skip it!
+	            while (currentRow_old.getCell(0).getCellType().equals(CellType.STRING)) {
+	            	
+	            	/*System.out.println("Old sheet Row: " + currentRow_old.getRowNum() + 
+            				", This is a text row.  Skipping...");*/
+	            	
+	            	//break;
+	            	
+	            	if (!oldRowIterator.hasNext())
+	            		break;
+	            	currentRow_old = (XSSFRow) oldRowIterator.next();
+	            	
+	            	//System.out.println("old row number: " + currentRow_old.getRowNum());
+	            	
+	            }
+	            
+		        // If cell 0 in the row is a string, this is a date row; Skip it!
+	            while (currentRow_new.getCell(0).getCellType().equals(CellType.STRING)) {
+	            	
+	            	/*System.out.println("New sheet Row: " + currentRow_new.getRowNum() + 
+	            				", This is a text row.  Skipping...");*/
+	            	
+	            	//break;
+	            	
+	            	if (!newRowIterator.hasNext())
+	            		break;
+	            	currentRow_new = (XSSFRow) newRowIterator.next();
+	            	
+	            	//System.out.println("New row number: " + currentRow_new.getRowNum());
+	            	
+	            }
+	            
+	            Iterator<Cell> cellIterator_old = currentRow_old.iterator();
+		        Iterator<Cell> cellIterator_new = currentRow_new.iterator();
+		        
+		        while (cellIterator_old.hasNext() && cellIterator_new.hasNext()) {
+		        	
+		            XSSFCell currentCell_old = (XSSFCell) cellIterator_old.next();
+		            XSSFCell currentCell_new = (XSSFCell) cellIterator_new.next();
+		            
+		            
+		            if (currentCell_new.getColumnIndex() == 0 || currentCell_new.getColumnIndex() == 1) {
+	
+		            	System.out.println("newRow: " + currentCell_new.getRowIndex() + 
+	            				", newColumn: " + currentCell_new.getColumnIndex() + 
+	            				", newValue: " + currentCell_new.getNumericCellValue() +
+	            				", oldRow: " + currentCell_old.getRowIndex() + 
+	            				", oldColumn: " + currentCell_old.getColumnIndex() +
+	            				", oldValue: " + currentCell_old.getNumericCellValue());
+		            	
+		            	try {
+		            		if (currentCell_old.getNumericCellValue() < currentCell_new.getNumericCellValue()) {
+		            			currentCell_new.setCellStyle(updateTimeCellStyles());
+		            			oldRowIterator.next();
+		         
+		            		}
+		            		else if (currentCell_old.getNumericCellValue() > currentCell_new.getNumericCellValue()) {
+		            			currentCell_new.setCellStyle(updateTimeCellStyles());
+		            			newRowIterator.next();
+		            		}
+		            	}
+		            	catch(IllegalStateException e){
+		            		e.printStackTrace();
+		            		System.out.println("Row: " + currentCell_new.getRowIndex() + 
+		            				", Column: " + currentCell_new.getColumnIndex() + 
+		            				", Exception thrown...");
+		            	}
+	            		
+		            		
+		            }
+		            else {
+		            	
+		            	/*System.out.println("Row: " + currentCell_new.getRowIndex() + 
+	            				", Column: " + currentCell_new.getColumnIndex() + 
+	            				", This is a string cell. Cell Value: " +
+	            				currentCell_new.getStringCellValue() +
+	            				", Old schedule value is " +
+	            				currentCell_old.getStringCellValue());*/
+		            	
+		            	if (!currentCell_old.getStringCellValue().equals(currentCell_new.getStringCellValue())) {
+	
+			                currentCell_new.setCellStyle(updateRowStyles());
+			                //System.out.println("Highlighting...");
+	
+			            }
+		            }
+		            if (!newRowIterator.hasNext()) {
+		            	
+		            }
+		            
+		            else if (!oldRowIterator.hasNext()) {
+		            	
+		            	for (Cell cell : new_sheet.getRow(currentRow_new.getRowNum() + 1)) {
+		            		
+		            		if (cell.getColumnIndex() == 0 || cell.getColumnIndex() == 1) {
+		            			
+		            			cell.setCellStyle(updateTimeCellStyles());
+		            			
+		            		}
+		            		else {
+		            			
+		            			cell.setCellStyle(updateRowStyles());
+		            			
+		            		}
+		            	}
+		            }     
+		        }   
+		    }
+		    
+		    break;
+		}
+		
+		return true;
+	}
+	
+	public void OpenWorkbooks(String newWorkbook, String oldWorkbook) throws FileNotFoundException, IOException {
+		
+		XSSFWorkbook nwb, owb;
+		
+		nwb = new XSSFWorkbook(new FileInputStream(newWorkbook));
+		owb = new XSSFWorkbook(new FileInputStream(oldWorkbook));
+		
+		if (FileCompare(nwb, owb))
+			System.out.println("Finished comparison");
+		
+		FileOutputStream scheduleOutStream = null;
+		try {
 
-        if (reply == JOptionPane.YES_OPTION) {
-            //JOptionPane.showMessageDialog(null, "HELLO");
-            isUpdate = true;
-        }
-        else {
-            //JOptionPane.showMessageDialog(null, "GOODBYE");
-            isUpdate = false;
-        }
+			scheduleOutStream = new FileOutputStream(newWorkbook);
 
-        return isUpdate;
+
+		} catch (FileNotFoundException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			nwb.write(scheduleOutStream);
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			scheduleOutStream.close();
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        owb.close();
+        nwb.close();
 		
 	}
 
