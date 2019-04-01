@@ -70,7 +70,7 @@ public class SpreadsheetHandler {
         workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
         
         //final String userHome = System.getProperty("user.home");
-        //String filePath = userHome + "\\Documents\\ScheduleGenie_Zeta\\nscc_bulk_template.xls";
+        //String filePath = userHome + "\\Documents\\ScheduleGenie_Nasbu\\nscc_bulk_template.xls";
         String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "nscc_bulk_template.xls";
         System.out.println(filePath);
         
@@ -557,7 +557,7 @@ public class SpreadsheetHandler {
 	
 	/**
 	 * Uses JFileChooser swing extension to open a dialog box.  Default location is set to 
-	 * <user_home>\Documents\ScheduleGenie_Zeta\exports directory.
+	 * <user_home>\Documents\ScheduleGenie_Nasbu\exports directory.
 	 * @param suggestedFileName
 	 * @return
 	 */
@@ -568,7 +568,7 @@ public class SpreadsheetHandler {
 		        "EXCEL Spreadsheets", "xlsx", "xls");
 		fileChooser.setFileFilter(filter);
 		fileChooser.setCurrentDirectory(new File
-				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Zeta" + System.getProperty("file.separator") + "exports"));
+				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Nasbu" + System.getProperty("file.separator") + "exports"));
 		fileChooser.setSelectedFile(new File (suggestedFileName));
 		//if (fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
 		//if (fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
