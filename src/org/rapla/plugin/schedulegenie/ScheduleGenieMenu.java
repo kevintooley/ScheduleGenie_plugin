@@ -330,14 +330,14 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmss");
 			String hhmmss = LocalTime.now().format(dtf);
 			
-			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + "_" + hhmmss + ".xlsx";
-			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + "_" + hhmmss + ".xlsx";
+			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 			
 		}
 		else {
 		
-			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
-			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 			
 		}
 		
@@ -345,7 +345,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		
 		if (isUpdate) {
 			
-			String oldSchedule = userHome + "\\Documents\\ScheduleGenie_Zeta\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			String oldSchedule = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
 			
 			sh.OpenWorkbooks(scheduleFilename, oldSchedule);
 			
