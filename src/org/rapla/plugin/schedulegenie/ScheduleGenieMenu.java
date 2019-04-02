@@ -318,26 +318,23 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		final String scheduleName = "_NSCC_Test_Schedules";
 		final String bulkUploadName = "_NSCC_Bulk_Upload";
 		
-		// Get user home property
-		final String userHome = System.getProperty("user.home");
-		
 		boolean isUpdate = UpdateYesNoBox(getMainComponent());
 		
-		String scheduleFilename, bulkFilename;
+		final String scheduleFilename, bulkFilename, oldSchedule;
 		
 		if (isUpdate) {
 			
 			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HHmmss");
 			String hhmmss = LocalTime.now().format(dtf);
 			
-			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + "_" + hhmmss + ".xlsx";
-			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			scheduleFilename = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + "_" + hhmmss + ".xlsx";
+			bulkFilename = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 			
 		}
 		else {
 		
-			scheduleFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
-			bulkFilename = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
+			scheduleFilename = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			bulkFilename = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + bulkUploadName + ".xls";
 			
 		}
 		
@@ -345,7 +342,7 @@ public class ScheduleGenieMenu extends RaplaGUIComponent implements Identifiable
 		
 		if (isUpdate) {
 			
-			String oldSchedule = userHome + "\\Documents\\ScheduleGenie_Nasbu\\exports\\" + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+			oldSchedule = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
 			
 			sh.OpenWorkbooks(scheduleFilename, oldSchedule);
 			

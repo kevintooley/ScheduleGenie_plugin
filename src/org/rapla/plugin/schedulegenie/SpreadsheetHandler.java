@@ -69,9 +69,7 @@ public class SpreadsheetHandler {
 		// Create a Workbook for Lab schedules
         workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
         
-        //final String userHome = System.getProperty("user.home");
-        //String filePath = userHome + "\\Documents\\ScheduleGenie_Nasbu\\nscc_bulk_template.xls";
-        String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "nscc_bulk_template.xls";
+        final String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "nscc_bulk_template.xls";
         System.out.println(filePath);
         
         // Create workbook for bulk upload
@@ -557,7 +555,7 @@ public class SpreadsheetHandler {
 	
 	/**
 	 * Uses JFileChooser swing extension to open a dialog box.  Default location is set to 
-	 * <user_home>\Documents\ScheduleGenie_Nasbu\exports directory.
+	 * <user_home>\Documents\ScheduleGenie_<release>\exports directory.
 	 * @param suggestedFileName
 	 * @return
 	 */
@@ -567,15 +565,15 @@ public class SpreadsheetHandler {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 		        "EXCEL Spreadsheets", "xlsx", "xls");
 		fileChooser.setFileFilter(filter);
+		
 		fileChooser.setCurrentDirectory(new File
-				(System.getProperty("user.home") + System.getProperty("file.separator") + "Documents" + System.getProperty("file.separator") + "ScheduleGenie_Nasbu" + System.getProperty("file.separator") + "exports"));
+				(System.getProperty("user.dir") + System.getProperty("file.separator") + "exports"));
+		
 		fileChooser.setSelectedFile(new File (suggestedFileName));
-		//if (fileChooser.showOpenDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
-		//if (fileChooser.showSaveDialog(fileChooser) == JFileChooser.APPROVE_OPTION) {
+
 		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
 		  File file = fileChooser.getSelectedFile();
-		  //System.out.println(file.getName());
-		  //System.out.println(file.getAbsolutePath());
+
 		  return file.getAbsolutePath();
 		}
 		return "failed";
@@ -1024,7 +1022,7 @@ public class SpreadsheetHandler {
 		workbook = old_workbook;
 		updateWorkbook = new_workbook;
 		
-		int sheetCounter = 0;
+		//int sheetCounter = 0;
 		//int rowCounter = 0;
 		//int cellCounter = 0;
 		
@@ -1033,12 +1031,10 @@ public class SpreadsheetHandler {
 		
 		while (oldSheetIterator.hasNext() && newSheetIterator.hasNext()) {
 			
-			//XSSFSheet old_sheet = old_workbook.getSheetAt(sheetCounter);
-		    //XSSFSheet new_sheet = new_workbook.getSheetAt(sheetCounter);
 		    XSSFSheet old_sheet = (XSSFSheet) oldSheetIterator.next();
 		    XSSFSheet new_sheet = (XSSFSheet) newSheetIterator.next();
 		    
-		    System.out.println("Sheet Name: " + new_sheet.getSheetName());
+		    //System.out.println("Sheet Name: " + new_sheet.getSheetName());
 		    
 		    Iterator<Row> oldRowIterator = old_sheet.iterator();
 		    Iterator<Row> newRowIterator = new_sheet.iterator();
@@ -1048,116 +1044,116 @@ public class SpreadsheetHandler {
 		        XSSFRow currentRow_old = (XSSFRow) oldRowIterator.next();
 		        XSSFRow currentRow_new = (XSSFRow) newRowIterator.next();
 		        
-		        // If cell 0 in the row is a string, this is a date row; Skip it!
-	            while (currentRow_old.getCell(0).getCellType().equals(CellType.STRING)) {
-	            	
-	            	/*System.out.println("Old sheet Row: " + currentRow_old.getRowNum() + 
-            				", This is a text row.  Skipping...");*/
-	            	
-	            	//break;
-	            	
-	            	if (!oldRowIterator.hasNext())
-	            		break;
-	            	currentRow_old = (XSSFRow) oldRowIterator.next();
-	            	
-	            	//System.out.println("old row number: " + currentRow_old.getRowNum());
-	            	
-	            }
-	            
-		        // If cell 0 in the row is a string, this is a date row; Skip it!
-	            while (currentRow_new.getCell(0).getCellType().equals(CellType.STRING)) {
-	            	
-	            	/*System.out.println("New sheet Row: " + currentRow_new.getRowNum() + 
-	            				", This is a text row.  Skipping...");*/
-	            	
-	            	//break;
-	            	
-	            	if (!newRowIterator.hasNext())
-	            		break;
-	            	currentRow_new = (XSSFRow) newRowIterator.next();
-	            	
-	            	//System.out.println("New row number: " + currentRow_new.getRowNum());
-	            	
-	            }
-	            
-	            Iterator<Cell> cellIterator_old = currentRow_old.iterator();
-		        Iterator<Cell> cellIterator_new = currentRow_new.iterator();
-		        
-		        while (cellIterator_old.hasNext() && cellIterator_new.hasNext()) {
+		        if (currentRow_new.getRowNum() < 4) {}
+		        else {
 		        	
-		            XSSFCell currentCell_old = (XSSFCell) cellIterator_old.next();
-		            XSSFCell currentCell_new = (XSSFCell) cellIterator_new.next();
-		            
-		            
-		            if (currentCell_new.getColumnIndex() == 0 || currentCell_new.getColumnIndex() == 1) {
-	
-		            	System.out.println("newRow: " + currentCell_new.getRowIndex() + 
-	            				", newColumn: " + currentCell_new.getColumnIndex() + 
-	            				", newValue: " + currentCell_new.getNumericCellValue() +
-	            				", oldRow: " + currentCell_old.getRowIndex() + 
-	            				", oldColumn: " + currentCell_old.getColumnIndex() +
-	            				", oldValue: " + currentCell_old.getNumericCellValue());
+			        // If cell 0 in the row is a string, this is a date row; Skip it!
+		            while (currentRow_old.getCell(0).getCellType().equals(CellType.STRING)) {
 		            	
-		            	try {
-		            		if (currentCell_old.getNumericCellValue() < currentCell_new.getNumericCellValue()) {
-		            			currentCell_new.setCellStyle(updateTimeCellStyles());
-		            			oldRowIterator.next();
-		         
-		            		}
-		            		else if (currentCell_old.getNumericCellValue() > currentCell_new.getNumericCellValue()) {
-		            			currentCell_new.setCellStyle(updateTimeCellStyles());
-		            			newRowIterator.next();
-		            		}
-		            	}
-		            	catch(IllegalStateException e){
-		            		e.printStackTrace();
-		            		System.out.println("Row: " + currentCell_new.getRowIndex() + 
-		            				", Column: " + currentCell_new.getColumnIndex() + 
-		            				", Exception thrown...");
-		            	}
-	            		
-		            		
+		            	/*System.out.println("Old sheet Row: " + currentRow_old.getRowNum() + 
+	            				", This is a text row.  Skipping...");*/
+		            	
+		            	if (!oldRowIterator.hasNext())
+		            		break;
+		            	currentRow_old = (XSSFRow) oldRowIterator.next();
+		            	
+		            	//System.out.println("old row number: " + currentRow_old.getRowNum());
+		            	
 		            }
-		            else {
+		            
+			        // If cell 0 in the row is a string, this is a date row; Skip it!
+		            while (currentRow_new.getCell(0).getCellType().equals(CellType.STRING)) {
 		            	
-		            	/*System.out.println("Row: " + currentCell_new.getRowIndex() + 
-	            				", Column: " + currentCell_new.getColumnIndex() + 
-	            				", This is a string cell. Cell Value: " +
-	            				currentCell_new.getStringCellValue() +
-	            				", Old schedule value is " +
-	            				currentCell_old.getStringCellValue());*/
+		            	/*System.out.println("New sheet Row: " + currentRow_new.getRowNum() + 
+		            				", This is a text row.  Skipping...");*/
 		            	
-		            	if (!currentCell_old.getStringCellValue().equals(currentCell_new.getStringCellValue())) {
-	
-			                currentCell_new.setCellStyle(updateRowStyles());
-			                //System.out.println("Highlighting...");
-	
+		            	if (!newRowIterator.hasNext())
+		            		break;
+		            	currentRow_new = (XSSFRow) newRowIterator.next();
+		            	
+		            	//System.out.println("New row number: " + currentRow_new.getRowNum());
+		            	
+		            }
+		            
+		            Iterator<Cell> cellIterator_old = currentRow_old.iterator();
+			        Iterator<Cell> cellIterator_new = currentRow_new.iterator();
+			        
+			        while (cellIterator_old.hasNext() && cellIterator_new.hasNext()) {
+			        	
+			            XSSFCell currentCell_old = (XSSFCell) cellIterator_old.next();
+			            XSSFCell currentCell_new = (XSSFCell) cellIterator_new.next();
+			            
+			            
+			            if (currentCell_new.getColumnIndex() == 0 || currentCell_new.getColumnIndex() == 1) {
+		
+			            	/*System.out.println("newRow: " + currentCell_new.getRowIndex() + 
+		            				", newColumn: " + currentCell_new.getColumnIndex() + 
+		            				", newValue: " + currentCell_new.getNumericCellValue() +
+		            				", oldRow: " + currentCell_old.getRowIndex() + 
+		            				", oldColumn: " + currentCell_old.getColumnIndex() +
+		            				", oldValue: " + currentCell_old.getNumericCellValue());*/
+			            	
+			            	try {
+			            		if (currentCell_old.getNumericCellValue() < currentCell_new.getNumericCellValue()) {
+			            			currentCell_new.setCellStyle(updateTimeCellStyles());
+			            			if (oldRowIterator.hasNext())
+			            				oldRowIterator.next();
+			         
+			            		}
+			            		else if (currentCell_old.getNumericCellValue() > currentCell_new.getNumericCellValue()) {
+			            			currentCell_new.setCellStyle(updateTimeCellStyles());
+			            			if (newRowIterator.hasNext())
+			            				newRowIterator.next();
+			            		}
+			            	}
+			            	catch(IllegalStateException e){
+			            		e.printStackTrace();
+			            		/*System.out.println("Row: " + currentCell_new.getRowIndex() + 
+			            				", Column: " + currentCell_new.getColumnIndex() + 
+			            				", Exception thrown...");*/
+			            	}
+		            		
+			            		
 			            }
-		            }
-		            if (!newRowIterator.hasNext()) {
-		            	
-		            }
-		            
-		            else if (!oldRowIterator.hasNext()) {
-		            	
-		            	for (Cell cell : new_sheet.getRow(currentRow_new.getRowNum() + 1)) {
-		            		
-		            		if (cell.getColumnIndex() == 0 || cell.getColumnIndex() == 1) {
-		            			
-		            			cell.setCellStyle(updateTimeCellStyles());
-		            			
-		            		}
-		            		else {
-		            			
-		            			cell.setCellStyle(updateRowStyles());
-		            			
-		            		}
-		            	}
-		            }     
-		        }   
+			            else {
+			            	
+			            	/*System.out.println("Row: " + currentCell_new.getRowIndex() + 
+		            				", Column: " + currentCell_new.getColumnIndex() + 
+		            				", This is a string cell. Cell Value: " +
+		            				currentCell_new.getStringCellValue() +
+		            				", Old schedule value is " +
+		            				currentCell_old.getStringCellValue());*/
+			            	
+			            	if (!currentCell_old.getStringCellValue().equals(currentCell_new.getStringCellValue())) {
+		
+				                currentCell_new.setCellStyle(updateRowStyles());
+				                //System.out.println("Highlighting...");
+		
+				            }
+			            }
+			            if (!newRowIterator.hasNext()) {
+			            	
+			            }
+			            
+			            else if (!oldRowIterator.hasNext()) {
+			            	
+			            	for (Cell cell : new_sheet.getRow(currentRow_new.getRowNum() + 1)) {
+			            		
+			            		if (cell.getColumnIndex() == 0 || cell.getColumnIndex() == 1) {
+			            			
+			            			cell.setCellStyle(updateTimeCellStyles());
+			            			
+			            		}
+			            		else {
+			            			
+			            			cell.setCellStyle(updateRowStyles());
+			            			
+			            		}
+			            	}
+			            }     
+			        } 
+		        }
 		    }
-		    
-		    break;
 		}
 		
 		return true;
