@@ -175,7 +175,7 @@ public class MetricsGenieMenu extends RaplaGUIComponent implements IdentifiableM
 		/*
 		 * Create a Schedule Sheet for each lab
 		 */
-		//MetricsSpreadsheetHandler sh = new MetricsSpreadsheetHandler(false);
+		MetricsSpreadsheetHandler sh = new MetricsSpreadsheetHandler(false);
 		
 		// Row counter for bulk upload spreadsheet starts at row 1; 
 		// Isolated from loop below as we don't want to reset this counter

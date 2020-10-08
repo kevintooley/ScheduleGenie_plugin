@@ -114,16 +114,16 @@ public class MetricsSpreadsheetHandler {
 
         // Create Row A, merge, adjust column widths
         XSSFRow headerRowA = sheet.createRow(0);
-        sheet.setColumnWidth(0, 105);
-        sheet.setColumnWidth(1, 111);
-        sheet.setColumnWidth(2, 209);
-        sheet.setColumnWidth(3, 106);
-        sheet.setColumnWidth(4, 142);
-        sheet.setColumnWidth(5, 126);
-        sheet.setColumnWidth(6, 104);
-        sheet.setColumnWidth(7, 104);
-        sheet.setColumnWidth(8, 132);
-        sheet.setColumnWidth(9, 115);
+        sheet.setColumnWidth(0, 3900);
+        sheet.setColumnWidth(1, 4100);
+        sheet.setColumnWidth(2, 7500);
+        sheet.setColumnWidth(3, 3800);
+        sheet.setColumnWidth(4, 5700);
+        sheet.setColumnWidth(5, 4200);
+        sheet.setColumnWidth(6, 3800);
+        sheet.setColumnWidth(7, 3800);
+        sheet.setColumnWidth(8, 5100);
+        sheet.setColumnWidth(9, 4200);
         
         for(int i = 0; i < 10; i++) {
             XSSFCell cell = headerRowA.createCell(i);
@@ -160,6 +160,79 @@ public class MetricsSpreadsheetHandler {
             	break;
             }
         }	
+	}
+	
+	/**
+	 * Saves the workbooks using a FileOutputStream. The stream is created and the workbooks are written
+	 * to the stream.  The Bulk Upload spreadsheet will always receive the same file name, but the 
+	 * Schedule spreadsheet will allow the user to change the file for numerous revisions. 
+	 * @param scheduleFilePath absolute path string
+	 * @param bulkFilePath absolute path string
+	 */
+	public void closeWorkbook(String itsFilePath) {
+		// Write the output to a file
+        FileOutputStream scheduleOutStream = null;
+
+		try {
+			if (isUnitTest)
+				scheduleOutStream = new FileOutputStream(itsFilePath);
+			else
+				scheduleOutStream = new FileOutputStream(chooseFile(itsFilePath));
+
+		} catch (FileNotFoundException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			workbook.write(scheduleOutStream);
+
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			scheduleOutStream.close();
+
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        // Closing the workbook
+        try {
+			workbook.close();
+
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Uses JFileChooser swing extension to open a dialog box.  Default location is set to 
+	 * <user_home>\Documents\ScheduleGenie_<release>\exports directory.
+	 * @param suggestedFileName
+	 * @return
+	 */
+	public String chooseFile(String suggestedFileName) {
+		
+		JFileChooser fileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter(
+		        "EXCEL Spreadsheets", "xlsx", "xls");
+		fileChooser.setFileFilter(filter);
+		
+		fileChooser.setCurrentDirectory(new File
+				(System.getProperty("user.dir") + System.getProperty("file.separator") + "exports"));
+		
+		fileChooser.setSelectedFile(new File (suggestedFileName));
+
+		if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		  File file = fileChooser.getSelectedFile();
+
+		  return file.getAbsolutePath();
+		}
+		return "failed";
+		
 	}
 
 }
