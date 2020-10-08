@@ -6,6 +6,9 @@
 		<text lang="de">Exportiere Sicht in iCal File</text>
 		<text lang="fr">Exporte la vue en iCal File</text>
 	</entry>
+	<entry key="schedule.metrics">
+		<text lang="en">Export Metrics</text>
+	</entry>
 	<entry key="export_ical_text">
 		<text lang="en">Publish calendar to iCal</text>
 		<text lang="de">Veröffentliche Kalender nach iCal</text>
