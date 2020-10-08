@@ -176,6 +176,7 @@ public class MetricsGenieMenu extends RaplaGUIComponent implements IdentifiableM
 		 * Create a Schedule Sheet for each lab
 		 */
 		MetricsSpreadsheetHandler sh = new MetricsSpreadsheetHandler(false);
+		sh.createScheduleSheet();
 		
 		// Row counter for bulk upload spreadsheet starts at row 1; 
 		// Isolated from loop below as we don't want to reset this counter
@@ -204,6 +205,31 @@ public class MetricsGenieMenu extends RaplaGUIComponent implements IdentifiableM
 					
 					Object value = column.getValue(app);
 					
+					if (value.toString().contains(name)) {
+						//System.out.println("value:" + value);
+						//System.out.println("Shot belongs to " + name);
+						appointmentObjects.add(app);
+						break;
+					}
+
+				}
+				
+			}
+			
+			Lab lab1 = new Lab(name, appointmentObjects);
+			labObjects.add(lab1);
+		}
+		
+		for (Lab room : labObjects) {
+			
+			for (Object app : room.shots) {
+				
+				ArrayList<Object> shotData = new ArrayList<Object>();
+				
+				for (RaplaTableColumn column : myColumns) {
+					
+					Object value = column.getValue(app);
+					
 					Class columnClass = column.getColumnClass();
 		    		boolean isDate = columnClass.isAssignableFrom( java.util.Date.class);
 					
@@ -215,25 +241,30 @@ public class MetricsGenieMenu extends RaplaGUIComponent implements IdentifiableM
 		    				SimpleDateFormat format = new SimpleDateFormat();
 		    				format.setTimeZone(TimeZone.getTimeZone("EDT"));
 		    				
+		    				shotData.add(format.format(tempDate));
+		    				
 		    				logger.info("Time: " + format.format(tempDate));
 							
 						} else {
 							
+							shotData.add(value);
 							logger.info((String)value);
 							
 						}
 		    			
 		    		}
-
+	
 				}
-				logger.info("-----------");
+				
+				sh.addShotToSchedule(room.name, j, shotData);
+				logger.info("----- " + j + " ------");
+				j++;
+				
 			}
 			
-			
-			Lab lab1 = new Lab(name, appointmentObjects);
-			labObjects.add(lab1);
-			
-		}
+		}	
+		
+		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/metric-FullOutput.xlsx");
 
 	}
 	

@@ -16,11 +16,15 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.rapla.framework.logger.Logger;
+import org.rapla.gui.RaplaGUIComponent;
+import org.rapla.gui.toolkit.IdentifiableMenuEntry;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -28,6 +32,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException; 
@@ -46,6 +51,7 @@ public class MetricsSpreadsheetHandler {
 	
 	private boolean isUnitTest;
 	
+	//final Logger logger = getLogger(); FIXME:  Add logger
 	
 	/**
 	 * Accessor method for the private isUnitTest boolean
@@ -160,6 +166,127 @@ public class MetricsSpreadsheetHandler {
             	break;
             }
         }	
+	}
+	
+	/**
+	 * After the main function has created the lab and test shot objects, the test shot is passed to this method to get added to the excel spreadsheet.  
+	 * @param sheetName
+	 * @param rowNumber
+	 * @param shotName
+	 * @param startTime
+	 * @param endTime
+	 * @param resources
+	 * @param ri
+	 */
+	public void addShotToSchedule(String labName, int itsRowNumber, ArrayList<Object> itsShotData) {
+		
+		// Add row to sheet
+        XSSFSheet sheet = workbook.getSheet("Schedule");
+        XSSFRow newRow = sheet.createRow(itsRowNumber);
+        
+        // Split the resources for each shot into an array
+        String[] resourceArray = itsShotData.get(3).toString().split(",");
+        
+        
+        // Create the cells for the new row
+        for(int i = 0; i < 10; i++) {
+        	
+            XSSFCell cell = newRow.createCell(i);
+            
+            switch(i) {
+            case 0:
+            	
+            	String elementId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("+")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			elementId = tmp.replace("+", "");
+            			break;
+            		}
+            	}
+            	cell.setCellValue(elementId);
+            	break;
+            	
+            case 1:
+            	
+            	String programId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("C:")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			programId = tmp.replace("C:", "");
+            			break;
+            		}
+            	}
+            	cell.setCellValue(programId);
+            	break;
+            	
+            case 2:
+            	
+            	String fundingId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("F:")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			fundingId = tmp.replace("F:", "");
+            			break;
+            		}
+            	}
+            	cell.setCellValue(fundingId);
+            	break;
+            	
+            case 3:
+            	
+            	String build = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("Build")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			build = tmp.replace("Build", "");
+            			break;
+            		}
+            	}
+            	cell.setCellValue(build);
+            	break;
+            	
+            case 4:
+            	
+            	String effortId = "";
+            	for (String res : resourceArray) {
+            		if (res.contains("*")) {
+            			String tmp = res.replaceAll("\\s", "");
+            			effortId = tmp.replace("*", "");
+            			break;
+            		}
+            	}
+            	cell.setCellValue(effortId);
+            	break;
+            	
+            case 5:
+            	
+            	cell.setCellValue(labName);
+            	break;
+            	
+            case 6:
+            	
+            	cell.setCellValue(itsShotData.get(1).toString());
+            	break;
+            	
+            case 7:
+            	
+            	cell.setCellValue(itsShotData.get(2).toString());
+            	break;
+            	
+            case 8:
+            	
+            	cell.setCellValue(itsShotData.get(5).toString());
+            	break;
+            	
+            case 9:
+            	
+            	String[] name = itsShotData.get(4).toString().split(",");
+            	cell.setCellValue(name[0]);
+            	break;
+            }
+        }
+		
 	}
 	
 	/**

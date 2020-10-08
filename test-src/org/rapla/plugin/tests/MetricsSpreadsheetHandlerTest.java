@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -75,6 +76,49 @@ public class MetricsSpreadsheetHandlerTest {
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(0).getCell(7).getStringCellValue().equals("END DATE"));
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(0).getCell(8).getStringCellValue().equals("TOTAL DURATION"));
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(0).getCell(9).getStringCellValue().equals("USER"));
+		
+		
+		// TODO:  Add test to check names of sheets
+		
+	}
+	
+	@Test
+	public void testAddShotToSchedule() throws FileNotFoundException, IOException {
+		
+		File f = new File("C:/Users/ktooley/Documents/TEST/metric-AddShotToSchedule_Test.xlsx");
+		if (f.exists()) {
+			if (f.delete()) { System.out.println("File deleted"); }
+		}
+		
+		MetricsSpreadsheetHandler sh = new MetricsSpreadsheetHandler(true);
+		
+		sh.createScheduleSheet();
+
+		ArrayList<Object> shotData = new ArrayList<Object>();
+		shotData.add("CND:CPM:TI16");
+		shotData.add("10/6/20 5:00 AM");
+		shotData.add("10/6/20 8:00 AM");
+		shotData.add("*SWCR, MES-8, F:CPM-FY19, C:9C22D, Build 32B, +CND");
+		shotData.add("Schraut, Karl");
+		shotData.add("3,0");
+		
+		sh.addShotToSchedule("DT4", 1, shotData);
+		
+		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/metric-AddShotToSchedule_Test.xlsx");
+		
+		assertTrue(f.exists());
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(0).getStringCellValue().equals("CND"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(1).getStringCellValue().equals("9C22D"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(2).getStringCellValue().equals("CPM-FY19"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(3).getStringCellValue().equals("32B"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(4).getStringCellValue().equals("SWCR"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(5).getStringCellValue().equals("DT4"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(6).getStringCellValue().equals("10/6/20 5:00 AM"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(7).getStringCellValue().equals("10/6/20 8:00 AM"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(8).getStringCellValue().equals("3,0"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(9).getStringCellValue().equals("Schraut"));
+		
+		
 		
 		
 		// TODO:  Add test to check names of sheets
