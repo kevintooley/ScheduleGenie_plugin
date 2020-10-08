@@ -276,7 +276,13 @@ public class MetricsSpreadsheetHandler {
             	
             case 8:
             	
-            	cell.setCellValue(itsShotData.get(5).toString());
+    			String tmp = itsShotData.get(5).toString().replaceAll("\\s", "");
+    			tmp = tmp.replace(",", ".");
+    			if (tmp.contains(".30")) {
+    				tmp = tmp.replace(".30", ".5");
+    			}
+    			Float duration = Float.parseFloat(tmp);
+            	cell.setCellValue(duration);
             	break;
             	
             case 9:

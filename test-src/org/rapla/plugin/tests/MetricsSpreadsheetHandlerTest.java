@@ -97,10 +97,10 @@ public class MetricsSpreadsheetHandlerTest {
 		ArrayList<Object> shotData = new ArrayList<Object>();
 		shotData.add("CND:CPM:TI16");
 		shotData.add("10/6/20 5:00 AM");
-		shotData.add("10/6/20 8:00 AM");
+		shotData.add("10/6/20 8:30 AM");
 		shotData.add("*SWCR, MES-8, F:CPM-FY19, C:9C22D, Build 32B, +CND");
 		shotData.add("Schraut, Karl");
-		shotData.add("3,0");
+		shotData.add("3,30");
 		
 		sh.addShotToSchedule("DT4", 1, shotData);
 		
@@ -114,8 +114,8 @@ public class MetricsSpreadsheetHandlerTest {
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(4).getStringCellValue().equals("SWCR"));
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(5).getStringCellValue().equals("DT4"));
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(6).getStringCellValue().equals("10/6/20 5:00 AM"));
-		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(7).getStringCellValue().equals("10/6/20 8:00 AM"));
-		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(8).getStringCellValue().equals("3,0"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(7).getStringCellValue().equals("10/6/20 8:30 AM"));
+		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(8).getNumericCellValue() == 3.5);
 		assertTrue(sh.workbook.getSheet("Schedule").getRow(1).getCell(9).getStringCellValue().equals("Schraut"));
 		
 		
