@@ -264,7 +264,20 @@ public class MetricsGenieMenu extends RaplaGUIComponent implements IdentifiableM
 			
 		}	
 		
-		sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/metric-FullOutput.xlsx");
+		//sh.closeWorkbook("C:/Users/ktooley/Documents/TEST/metric-FullOutput.xlsx");  //FOR TEST PURPOSES
+		
+		DateFormat sdfyyMMdd = new SimpleDateFormat("yyMMdd");
+		sdfyyMMdd.setTimeZone(TimeZone.getTimeZone("GMT"));
+		logger.info("Setting timestamp for filename...");
+		
+		// Use a simple string for the filename instead of the long sequence commented below
+		final String scheduleName = "_Test_Schedule_Metrics";
+		
+		final String scheduleFilename = System.getProperty("user.dir") + System.getProperty("file.separator") + "exports" + System.getProperty("file.separator") + sdfyyMMdd.format( model.getStartDate() ) + scheduleName + ".xlsx";
+		
+		logger.info("Saving file " + scheduleFilename);
+		sh.closeWorkbook(scheduleFilename);
+		logger.info("File saved.  Mission complete.");
 
 	}
 	

@@ -46,8 +46,6 @@ public class MetricsSpreadsheetHandler {
 	
 	// Declare the workbook used for the lab schedules
 	public XSSFWorkbook workbook;
-	public HSSFWorkbook bulkUpload;
-	public XSSFWorkbook updateWorkbook;
 	
 	private boolean isUnitTest;
 	
@@ -72,11 +70,13 @@ public class MetricsSpreadsheetHandler {
 		// Set unit test flag
 		isUnitTest = isTest;
 		
-		// Create a Workbook for Lab schedules
-        workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
-        
-        
-        
+		final String filePath = System.getProperty("user.dir") + System.getProperty("file.separator") + "data" + System.getProperty("file.separator") + "master_metrics_template.xlsx";
+	    //System.out.println(filePath);
+
+	    // Open template Workbook for metrics data
+	    workbook = new XSSFWorkbook(new FileInputStream(filePath));
+        //workbook = new XSSFWorkbook(); // new XSSFWorkbook() for generating `.xlsx` file
+
 	}
 	
 	/**
