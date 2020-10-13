@@ -60,7 +60,8 @@ public class ArchiverServiceImpl extends RaplaComponent implements ArchiverServi
 	public void delete(Integer removeOlderInDays) throws RaplaException {
 		checkAccess();
 		ClientFacade clientFacade = getContext().lookup(ClientFacade.class);
-		Date endDate = new Date(clientFacade.today().getTime() - removeOlderInDays * DateTools.MILLISECONDS_PER_DAY);
+		//Date endDate = new Date(clientFacade.today().getTime() - removeOlderInDays * DateTools.MILLISECONDS_PER_DAY);
+		Date endDate = new Date(clientFacade.today().getTime() - 180 * DateTools.MILLISECONDS_PER_DAY);
         Reservation[] events = clientFacade.getReservations((User) null, null, endDate, null); //ClassificationFilter.CLASSIFICATIONFILTER_ARRAY );
         List<Reservation> toRemove = new ArrayList<Reservation>();
         for ( int i=0;i< events.length;i++)

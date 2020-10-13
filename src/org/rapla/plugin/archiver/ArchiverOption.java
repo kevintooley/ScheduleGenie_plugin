@@ -124,7 +124,7 @@ public class ArchiverOption extends DefaultPluginOption implements ActionListene
         removeOlderYesNo.setSelected( isEnabled );
         if ( days == -20 )
         {
-            days = 30;
+            days = 180;
         }
         dayField.setNumber( new Integer(days));
     	boolean exportSelected= config.getChild(ArchiverService.EXPORT).getValueAsBoolean(false);
